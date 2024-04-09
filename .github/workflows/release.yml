@@ -73,7 +73,7 @@ jobs:
         build-args: |
           IMAGE_TAG=v19.1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v19.1.CURRENT_DATE,ghcr.io/tez-capital/tezbox:tezos-v19.1,ghcr.io/tez-capital/tezbox:latest
+        tags: ghcr.io/tez-capital/tezbox:tezos-v19.1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v19.1,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
 

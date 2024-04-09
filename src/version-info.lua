@@ -1,4 +1,4 @@
-local TEZBOX_VERSIOn = "0.0.5"
+local TEZBOX_VERSIOn = "0.0.6"
 
 return {
 	VERSION = TEZBOX_VERSIOn,
