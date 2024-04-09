@@ -54,7 +54,7 @@ jobs:
       uses: docker/setup-buildx-action@v2
 
     - name: build tezos v19.1
-      uses: docker/build-push-action@v5
+      uses: "./.github/template/build-container"
       with:
         containerfile: containers/tezos/Containerfile
         context: .
