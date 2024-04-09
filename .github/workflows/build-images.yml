@@ -19,14 +19,14 @@ jobs:
     - name: setup eli
       uses: alis-is/setup-eli@v1
 
-    - name: test ascend
+    - name: test tezbox
       run: |
         eli ./tests/all.lua
 
     - name: prep
       id: prep
       run: "VERSION=$(eli -e \"info = require'src.version-info'; io.write(info.VERSION)\")\necho \"VERSION=$VERSION\" >> $GITHUB_OUTPUT\nif git tag -l \"$VERSION\" | grep \"$VERSION\"; then \n  echo \"Version $VERSION already exists\";\nelse\n  echo \"Found new version - $VERSION\"\n  echo \"NEEDS_RELEASE=true\" >> $GITHUB_OUTPUT\nfi\n  #magic___^_^___line\n"
-    - name: build ascend and asctl
+    - name: build tezbox
       if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
       run: |
         export ELI_PATH=$PWD/eli
@@ -55,6 +55,7 @@ jobs:
 
     - name: build tezos v19.1
       uses: "./.github/template/build-container"
+      if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
       with:
         containerfile: containers/tezos/Containerfile
         context: .
