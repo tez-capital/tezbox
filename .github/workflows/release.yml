@@ -34,7 +34,7 @@ jobs:
           echo "Found new version - $VERSION"
           echo "NEEDS_RELEASE=true" >> $GITHUB_OUTPUT
         fi
-        echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+        echo "CURRENT_DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
     - name: build tezbox
       if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
@@ -73,7 +73,7 @@ jobs:
         build-args: |
           IMAGE_TAG=v19.1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v19.1#${{ steps.prep.outputs.SHORT_SHA }},ghcr.io/tez-capital/tezbox:tezos-v19.1,ghcr.io/tez-capital/tezbox:latest
+        tags: ghcr.io/tez-capital/tezbox:tezos-v19.1.CURRENT_DATE,ghcr.io/tez-capital/tezbox:tezos-v19.1,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
 
