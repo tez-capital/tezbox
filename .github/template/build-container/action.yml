@@ -1,0 +1,35 @@
+name: build-container
+description: template for building tezbox container image
+
+inputs:
+  containerfile:
+    description: path to contaienr file
+    required: true
+  context:
+    description: path to build context
+    required: true
+  platform:
+    description: image platform
+    required: true
+  build-args:
+    description: image build-args
+    required: true
+  tags:
+    description: image tags to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: build container
+    uses: docker/build-push-action@v5
+    with:
+      file: ${{ inputs.containerfile }}
+      context: ${{ inputs.context }}
+      platforms: ${{ inputs.platform }}
+      build-args: |
+        ${{ inputs.build-args }}
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+      tags: ${{ inputs.tags }}
+      push: true
+      provenance: false

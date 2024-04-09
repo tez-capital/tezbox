@@ -1,0 +1,33 @@
+ARG IMAGE_TAG=v19.1
+
+FROM docker.io/tezos/tezos:${IMAGE_TAG}
+
+USER root
+
+ENV ASCEND_SERVICES=/ascend/services
+ENV ASCEND_HEALTHCHECKS=/ascend/healthchecks
+ENV ASCEND_SOCKET=/var/run/ascend.socket
+ENV ASCEND_LOGS=/var/log/ascend
+ENV ASCEND_INIT="tezbox init --setup-services"
+ENV TEZBOX_USER=tezos
+
+RUN printf '#!/bin/sh\n\
+if [ -z "$GITHUB_TOKEN" ]; then\n\
+  wget "$@" \n\
+else\n\
+  wget --header "Authorization: token $GITHUB_TOKEN" "$@" \n\
+fi\n' > /usr/local/bin/auth_wget && chmod +x /usr/local/bin/auth_wget
+
+# Use auth_wget for downloading files with optional authentication
+RUN auth_wget https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh -O /tmp/setup-ascend.sh && sh /tmp/setup-ascend.sh --prerelease
+
+RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/context
+COPY configuration /tezbox/configuration
+RUN chown -R tezos:tezos /tezbox
+
+COPY bin/tezbox /usr/local/bin/tezbox
+RUN chown -R tezos:nogroup /usr/local/bin/tezbox
+
+USER root
+ENTRYPOINT [ "ascend" ]
+CMD [""]

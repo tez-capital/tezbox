@@ -1,0 +1,18 @@
+ARG IMAGE_TAG=latest
+
+FROM docker.io/tezos/tezos:${IMAGE_TAG}
+
+ENV ASCEND_SERVICES=/ascend/services
+ENV ASCEND_HEALTHCHECKS=/ascend/healthchecks
+ENV ASCEND_SOCKET=/var/run/ascend.socket
+ENV ASCEND_LOGS=/var/log/ascend
+
+RUN printf '#!/bin/sh\n\
+if [ -z "$GITHUB_TOKEN" ]; then\n\
+  wget "$@" \n\
+else\n\
+  wget --header "Authorization: token $GITHUB_TOKEN" "$@" \n\
+fi\n' > /usr/local/bin/auth_wget && chmod +x /usr/local/bin/auth_wget
+
+# Use auth_wget for downloading files with optional authentication
+RUN auth_wget https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh -O /tmp/setup-ascend.sh && sh /tmp/setup-ascend.sh --prerelease

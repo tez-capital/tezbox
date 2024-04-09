@@ -1,0 +1,65 @@
+name: build-images
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      NEEDS_RELEASE: ${{ steps.prep.outputs.NEEDS_RELEASE }}
+      VERSION: ${{ steps.prep.outputs.VERSION }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: setup eli
+      uses: alis-is/setup-eli@v1
+
+    - name: test ascend
+      run: |
+        eli ./tests/all.lua
+
+    - name: prep
+      id: prep
+      run: "VERSION=$(eli -e \"info = require'src.version-info'; io.write(info.VERSION)\")\necho \"VERSION=$VERSION\" >> $GITHUB_OUTPUT\nif git tag -l \"$VERSION\" | grep \"$VERSION\"; then \n  echo \"Version $VERSION already exists\";\nelse\n  echo \"Found new version - $VERSION\"\n  echo \"NEEDS_RELEASE=true\" >> $GITHUB_OUTPUT\nfi\n  #magic___^_^___line\n"
+    - name: build ascend and asctl
+      if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
+      run: |
+        export ELI_PATH=$PWD/eli
+        eli ./build/build.lua
+
+    - name: publish
+      uses: ncipollo/release-action@v1
+      if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
+      with:
+        artifacts: "bin/tezbox"
+        tag: ${{ steps.prep.outputs.VERSION }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Login to ghcr.io
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: build tezos v19.1
+      uses: docker/build-push-action@v5
+      with:
+        containerfile: containers/tezos/Containerfile
+        context: .
+        platform: linux/amd64
+        build-args: IMAGE_TAG=v19.1
+        tags: tezos-${{ steps.prep.outputs.VERSION }}
+
+
