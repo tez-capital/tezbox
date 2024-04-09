@@ -31,4 +31,4 @@ RUN chown -R tezos:nogroup /usr/local/bin/tezbox
 
 USER root
 ENTRYPOINT [ "ascend" ]
-CMD [""]
+CMD ["oxfordbox"]
