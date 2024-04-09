@@ -1,0 +1,5 @@
+archive
+.vscode
+
+bin/*
+!bin/.gitkeep

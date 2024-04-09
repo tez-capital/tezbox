@@ -1,0 +1,14 @@
+{
+	"genesis": {
+		"timestamp": "2024-04-06T13:33:14Z",
+		"block": "BL7aN4FRNydwCVRo4KB16FibBmu6LdzuTC4hxGqyziCVRhkdFBp",
+		"protocol": "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
+	},
+	"genesis_parameters": {
+		"values": {
+			"genesis_pubkey": "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2"
+		}
+	},
+	"chain_name": "TEZBOX",
+	"sandboxed_chain_name": "SANDBOXED_TEZBOX"
+}

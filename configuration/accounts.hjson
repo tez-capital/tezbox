@@ -1,0 +1,20 @@
+{
+    alice: {
+        pkh: tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+        pk: edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn
+        sk: unencrypted:edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq
+        balance: 2000000000000
+    }
+    bob: {
+        pkh: tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6
+        pk: edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4
+        sk: unencrypted:edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt
+        balance: 2000000000000
+    }
+    eve: {
+        pkh: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+        pk: edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav
+        sk: unencrypted:edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh
+        balance: 2000000000000
+    }
+}

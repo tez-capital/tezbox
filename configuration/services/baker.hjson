@@ -1,0 +1,17 @@
+{
+    executable: octez-baker-${PROTOCOL_SHORT}
+    args: [
+        run
+        remotely
+        --votefile
+        ${VOTE_FILE}
+    ]
+    environment: {
+        HOME: ${HOME}
+        TEZOS_LOG: "* -> info"
+    }
+    restart: always
+    restart_delay: 20
+    stop_timeout: 300
+    user: ${USER}
+}
