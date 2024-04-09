@@ -27,9 +27,7 @@ runs:
       file: ${{ inputs.containerfile }}
       context: ${{ inputs.context }}
       platforms: ${{ inputs.platform }}
-      build-args: |
-        ${{ inputs.build-args }}
-        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+      build-args: ${{ inputs.build-args }}
       tags: ${{ inputs.tags }}
       push: true
       provenance: false

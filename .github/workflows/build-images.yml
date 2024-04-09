@@ -59,7 +59,9 @@ jobs:
         containerfile: containers/tezos/Containerfile
         context: .
         platform: linux/amd64
-        build-args: IMAGE_TAG=v19.1
+        build-args: |
+          IMAGE_TAG=v19.1
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: tezos-${{ steps.prep.outputs.VERSION }}
 
 
