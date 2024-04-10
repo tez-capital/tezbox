@@ -87,7 +87,7 @@ jobs:
         platforms: linux/amd64
         build-args: |
           PROTOCOLS=Proxford,PtParisB
-          IMAGE_TAG=v20.0-rc1
+          IMAGE_TAG=octez-v20.0-rc1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1
         push: true
