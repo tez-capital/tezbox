@@ -2,6 +2,8 @@ ARG IMAGE_TAG=v19.1
 
 FROM docker.io/tezos/tezos:${IMAGE_TAG}
 
+ARG PROTOCOLS=oxfordbox
+
 USER root
 
 ENV ASCEND_SERVICES=/ascend/services
@@ -21,6 +23,10 @@ fi\n' > /usr/local/bin/auth_wget && chmod +x /usr/local/bin/auth_wget
 # Use auth_wget for downloading files with optional authentication
 RUN auth_wget https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh -O /tmp/setup-ascend.sh && sh /tmp/setup-ascend.sh --prerelease
 
+# RUN mkdir -p ${ASCEND_HEALTHCHECKS}
+# COPY tools/healthchecks/baker ${ASCEND_HEALTHCHECKS}/baker
+# RUN chmod +x ${ASCEND_HEALTHCHECKS}/baker
+
 RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/context
 COPY configuration /tezbox/configuration
 RUN chown -R tezos:tezos /tezbox
@@ -28,6 +34,11 @@ RUN chown -R tezos:tezos /tezbox
 COPY bin/tezbox /usr/local/bin/tezbox
 RUN chmod +x /usr/local/bin/tezbox
 RUN chown -R tezos:nogroup /usr/local/bin/tezbox
+
+ENV PROTOCOLS=${PROTOCOLS}
+RUN echo $PROTOCOLS
+ADD tools/cleanup-protocols.lua /tmp/cleanup-protocols.lua
+RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
 
 USER root
 ENTRYPOINT [ "ascend" ]

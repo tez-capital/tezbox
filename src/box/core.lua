@@ -11,8 +11,7 @@ local core = {}
 ---@field short string
 ---@field hash string
 ---@field aliases string[]?
----@field vote-file table?
----@field sandbox-overrides table?
+---@field path string
 
 ---@param protocol ProtocolDefinition
 local function inject_ascend_services(protocol)
@@ -26,9 +25,9 @@ local function inject_ascend_services(protocol)
 	local contextVars = {
 		PROTOCOL_SHORT = protocol.short,
 		PROTOCOL_HASH = protocol.hash,
-		SANDBOX_FILE = path.combine(env.contextDirectory, env.sandboxParametersFile),
+		SANDBOX_FILE = path.combine(protocol.path, constants.sandboxParametersFileId),
 		HOME = env.homeDirectory,
-		VOTE_FILE = env.voteFile,
+		VOTE_FILE = path.combine(protocol.path, constants.voteFileId),
 		USER = env.user,
 	}
 	vars = util.merge_tables(vars, contextVars, { overwrite = true })
@@ -54,6 +53,34 @@ local function inject_ascend_services(protocol)
 			os.exit(1)
 		end
 	end
+
+	-- healthchecks
+	local ascendHealthchecksDirectory = os.getenv "ASCEND_HEALTHCHECKS"
+	if not ascendHealthchecksDirectory then
+		log_error("ASCEND_SERVICES environment variable not set")
+		os.exit(1)
+	end
+	local healthchecksDirectory = path.combine(env.contextDirectory, "healthchecks")
+	local healthcheckFiles = fs.read_dir(healthchecksDirectory, {
+		recurse = true,
+		returnFullPaths = false,
+		asDirEntries = false,
+	}) --[=[@as string[]]=]
+
+	for _, healthcheckFileName in ipairs(healthcheckFiles) do
+		local sourcePath = path.combine(healthchecksDirectory, healthcheckFileName)
+		local targetPath = path.combine(ascendHealthchecksDirectory, healthcheckFileName)
+		local ok = fs.safe_copy(sourcePath, targetPath)
+		if not ok then
+			log_error("failed to copy healthcheck file " .. sourcePath .. " to " .. targetPath)
+			os.exit(1)
+		end
+		local ok = fs.chmod(targetPath, "rwxr--r--")
+		if not ok then
+			log_error("failed to chmod healthcheck file " .. targetPath)
+			os.exit(1)
+		end
+	end
 end
 
 ---@class TezboxInitializeOptions
@@ -63,6 +90,7 @@ end
 ---@param options TezboxInitializeOptions
 function core.initialize(protocol, options)
 	if type(options) ~= "table" then options = {} end
+	protocol = string.lower(protocol)
 
 	local ok, initializedProtocol = fs.safe_read_file(path.combine(env.tezboxDirectory, "tezbox-initialized"))
 
@@ -120,36 +148,41 @@ function core.initialize(protocol, options)
 		::continue::
 	end
 
+	local sandboxParametersFile = path.combine(proto.path, constants.sandboxParametersFileId)
+
+	-- inject accounts to sandbox parameters
+	local ok, accountsHjson = fs.safe_read_file(path.combine(env.contextDirectory, "accounts.json"))
+	if ok then
+		local accounts = hjson.decode(accountsHjson)
+		if type(accounts) == "table" and #table.keys(accounts) > 0 then
+			local parametersHjson = fs.read_file(sandboxParametersFile)
+			local parameters = hjson.decode(parametersHjson)
+
+			parameters.bootstrap_accounts = {}
+			for _, account in pairs(accounts) do
+				if type(account.balance) ~= "number" or type(account.pk) ~= "string" then
+					goto continue
+				end
+				table.insert(parameters.bootstrap_accounts, {
+					account.pk,
+					tostring(account.balance)
+				})
+				::continue::
+			end
+
+			fs.write_file(sandboxParametersFile, hjson.encode_to_json(parameters))
+		end
+	end
+
 	log_info("activating protocol " .. proto.hash)
 	octez.exec_with_node_running(function()
 		local result = octez.client.run({ "-block", "genesis", "activate", "protocol", proto.hash, "with", "fitness", "1",
 			"and",
-			"key", "activator", "and", "parameters", path.combine(env.contextDirectory, env.sandboxParametersFile) })
+			"key", "activator", "and", "parameters", sandboxParametersFile })
 		if result.exitcode ~= 0 then
 			error("failed to activate protocol " .. proto.hash)
 		end
 	end)
-
-	if type(proto["andbox-overrides"]) == "table" then
-		log_info("injecting protocol sandbox overrides")
-
-		if type(accounts) == "table" and #table.keys(accounts) > 0 then
-			local parametersFile = path.combine(env.contextDirectory, env.sandboxParametersFile)
-			local parametersHjson = fs.read_file(parametersFile)
-			local parameters = hjson.decode(parametersHjson)
-
-			parameters = util.merge_tables(parameters, proto["sandbox-overrides"],
-				{ arrayMergeStrategy = "prefer-t2", overwrite = true })
-
-			fs.write_file(parametersFile, hjson.encode_to_json(parameters))
-		end
-	end
-
-	-- create vote file
-	if not fs.exists(env.voteFile) then
-		local voteFileJson = hjson.encode_to_json(proto["vote-file"])
-		fs.write_file(env.voteFile, voteFileJson)
-	end
 
 	-- patch services
 	if options.injectServices then

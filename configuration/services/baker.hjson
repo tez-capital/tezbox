@@ -14,4 +14,11 @@
     restart_delay: 20
     stop_timeout: 300
     user: ${USER}
+    healthcheck: {
+        name: baker
+        action: restart
+        delay: 30
+        interval: 30
+        retries: 1
+    }
 }

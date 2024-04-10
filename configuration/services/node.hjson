@@ -2,6 +2,8 @@
     executable: octez-node
     args: [
         run
+        --rpc-addr=0.0.0.0:8732
+        --rpc-addr=0.0.0.0:20000
 		--allow-all-rpc=0.0.0.0
         --metadata-size-limit=unlimited
 		--synchronisation-threshold=0

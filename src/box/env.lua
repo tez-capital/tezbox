@@ -8,15 +8,12 @@ local defaultEnv = {
 	configurationDirectory = path.combine(tezboxDirectory, "configuration"),
 	configurationOverridesDirectory = path.combine(tezboxDirectory, "overrides"),
 	contextDirectory = tezboxContextDirectory,
-	sandboxParametersFile = "sandbox-parameters.json",
-	protocol = "proxford",
 
 	-- octez directories
 	homeDirectory = tezboxDataDirectory,
 
 	octezNodeBinary = "octez-node",
 	octezClientBinary = "octez-client",
-	voteFile = path.combine(tezboxContextDirectory, "vote.json"),
 
 	user = "tezbox",
 }
@@ -26,14 +23,11 @@ local env = util.merge_tables({
 	configurationOverridesDirectory = args.options["configuration-overrides-directory"] or
 		env.get_env("CONFIGURATION_OVERRIDES_DIRECTORY"),
 	contextDirectory = args.options["context-directory"] or env.get_env("CONTEXT_DIRECTORY"),
-	sandboxParametersFile = args.options["sandbox-parameters-file"] or env.get_env("SANDBOX_PARAMETERS_FILE"),
-	protocol = args.options["protocol"] or env.get_env("PROTOCOL"),
 
 	homeDirectory = args.options["home-directory"] or env.get_env("HOME_DIRECTORY"),
 
 	octezNodeBinary = args.options["octez-node-binary"] or env.get_env("OCTEZ_NODE_BINARY"),
 	octezClientBinary = args.options["octez-client-binary"] or env.get_env("OCTEZ_CLIENT_BINARY"),
-	voteFile = args.options["vote-file"] or env.get_env("VOTE_FILE"),
 
 	user = args.options["user"] or env.get_env("USER"),
 }, defaultEnv)

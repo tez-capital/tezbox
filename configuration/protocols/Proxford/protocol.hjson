@@ -4,10 +4,3 @@ hash: ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH
 aliases: [
 	oxfordbox
 ]
-vote-file: {
-	liquidity_baking_toggle_vote: pass
-	adaptive_issuance_vote: pass
-}
-sandbox-overrides: {
-
-}
