@@ -14,6 +14,7 @@ local defaultEnv = {
 
 	octezNodeBinary = "octez-node",
 	octezClientBinary = "octez-client",
+	octezBakerBinary = "octez-baker",
 
 	user = "tezbox",
 }

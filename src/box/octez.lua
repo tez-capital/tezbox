@@ -3,7 +3,8 @@ local env = require "box.env"
 
 local octez = {
 	client = {},
-	node = {}
+	node = {},
+	baker = {}
 }
 
 ---@param overrides table<string, string>
@@ -34,6 +35,15 @@ end
 ---@param secret string
 function octez.client.import_account(id, secret)
 	return octez.client.run({ "--protocol", "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK", "import", "secret", "key", id, secret })
+end
+
+---@param from string
+---@param transfers { destination: string, balance: string }[]
+function octez.client.transfer(from, transfers)
+	local hjson = require "hjson"
+
+	local result = octez.client.run({ "multiple", "transfers", "from", from, "using", hjson.encode_to_json(transfers), "--burn-cap", "10" })
+	return result
 end
 
 ---@class RunNodeOptions
@@ -131,6 +141,18 @@ end
 function octez.node.generate_identity(options)
 	if type(options) ~= "table" then options = {} end
 	return octez.node.run({ "identity", "generate", "0.0" }, options)
+end
+
+function octez.baker.run(shortProtocol, args, options)
+	if type(options) ~= "table" then options = {} end
+	if type(args) ~= "table" then args = {} end
+
+	return proc.spawn(env.octezBakerBinary .. "-" .. shortProtocol, args, {
+		username = options.user or env.user,
+		wait = false,
+		stdio = "inherit",
+		env = buildEnv( { HOME = env.homeDirectory } ),
+	}) --[[@as SpawnResult]]
 end
 
 function octez.reset()

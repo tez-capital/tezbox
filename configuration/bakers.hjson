@@ -1,0 +1,20 @@
+{
+    baker1: {
+        pkh: tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU
+        pk: edpkuTXkJDGcFd5nh6VvMz8phXxU3Bi7h6hqgywNFi1vZTfQNnS1RV
+        sk: unencrypted:edsk4ArLQgBTLWG5FJmnGnT689VKoqhXwmDPBuGx3z4cvwU9MmrPZZ
+        balance: 2000000000000
+    }
+    // baker2: {
+    //     pkh: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN
+    //     pk: edpktzNbDAUjUk697W7gYg2CRuBQjyPxbEg8dLccYYwKSKvkPvjtV9
+    //     sk: unencrypted:edsk39qAm1fiMjgmPkw1EgQYkMzkJezLNewd7PLNHTkr6w9XA2zdfo
+    //     balance: 2000000000000
+    // }
+    faucet: {
+        pkh: tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv
+        pk: edpkuFrRoDSEbJYgxRtLx2ps82UdaYc1WwfS9sE11yhauZt5DgCHbU
+        sk: unencrypted:edsk2uqQB9AY4FvioK2YMdfmyMrer5R8mGFyuaLLFfSRo8EoyNdht3
+        balance: "500000000000000"
+    }
+}

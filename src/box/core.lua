@@ -132,9 +132,12 @@ function core.initialize(protocol, options)
 	local accountsHjson = fs.read_file(path.combine(env.contextDirectory, 'accounts.json'))
 	local accounts = hjson.decode(accountsHjson)
 
+	local bakersHjson = fs.read_file(path.combine(env.contextDirectory, 'bakers.json'))
+	local bakerAccounts = hjson.decode(bakersHjson)
+
 	accounts.activator = constants.activatorAccount
 
-	for accountId, account in pairs(accounts) do
+	for accountId, account in pairs(util.merge_tables(accounts, bakerAccounts)) do
 		if not account.sk then
 			log_debug("skipped importing account " .. accountId .. " (no secret key)")
 			goto continue
@@ -151,28 +154,23 @@ function core.initialize(protocol, options)
 	local sandboxParametersFile = path.combine(proto.path, constants.sandboxParametersFileId)
 
 	-- inject accounts to sandbox parameters
-	local ok, accountsHjson = fs.safe_read_file(path.combine(env.contextDirectory, "accounts.json"))
-	if ok then
-		local accounts = hjson.decode(accountsHjson)
-		if type(accounts) == "table" and #table.keys(accounts) > 0 then
-			local parametersHjson = fs.read_file(sandboxParametersFile)
-			local parameters = hjson.decode(parametersHjson)
+	local parametersHjson = fs.read_file(sandboxParametersFile)
+	local parameters = hjson.decode(parametersHjson)
 
-			parameters.bootstrap_accounts = {}
-			for _, account in pairs(accounts) do
-				if type(account.balance) ~= "number" or type(account.pk) ~= "string" then
-					goto continue
-				end
-				table.insert(parameters.bootstrap_accounts, {
-					account.pk,
-					tostring(account.balance)
-				})
-				::continue::
-			end
-
-			fs.write_file(sandboxParametersFile, hjson.encode_to_json(parameters))
+	parameters.bootstrap_accounts = {}
+	for _, account in pairs(bakerAccounts) do
+		if (type(account.balance) ~= "number" and type(account.balance) ~= "string") or type(account.pk) ~= "string" then
+			goto continue
 		end
+		table.insert(parameters.bootstrap_accounts, {
+			account.pk,
+			tostring(account.balance)
+		})
+		
+		::continue::
 	end
+
+	fs.write_file(sandboxParametersFile, hjson.encode_to_json(parameters))
 
 	log_info("activating protocol " .. proto.hash)
 	octez.exec_with_node_running(function()
@@ -181,6 +179,33 @@ function core.initialize(protocol, options)
 			"key", "activator", "and", "parameters", sandboxParametersFile })
 		if result.exitcode ~= 0 then
 			error("failed to activate protocol " .. proto.hash)
+		end
+
+		-- run baker and inject transfers
+		local proc = octez.baker.run(proto.short, {
+			"run" , "remotely", "--votefile", path.combine(proto.path, constants.voteFileId) 
+		})
+
+		local transfers = {}
+		for _, account in pairs(accounts) do
+			if not account.balance then
+				goto continue
+			end
+			table.insert(transfers, {
+				destination = account.pkh,
+				amount = tostring(account.balance)
+			})
+			::continue::
+		end
+		os.sleep(2)
+		local result = octez.client.transfer("faucet", transfers)
+		proc:kill()
+		proc:wait(30)
+		if proc:get_exitcode() < 0 then
+			proc:kill(require "os.signal".SIGKILL)
+		end
+		if result.exitcode ~= 0 then
+			error("failed to top up accounts")
 		end
 	end)
 
