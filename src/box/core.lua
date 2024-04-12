@@ -92,7 +92,9 @@ function core.initialize(protocol, options)
 	if type(options) ~= "table" then options = {} end
 	protocol = string.lower(protocol)
 
-	local ok, initializedProtocol = fs.safe_read_file(path.combine(env.tezboxDirectory, "tezbox-initialized"))
+	local initializedProtocolFilePath = path.combine(env.homeDirectory, "tezbox-initialized")
+
+	local ok, initializedProtocol = fs.safe_read_file(initializedProtocolFilePath)
 
 	if ok then
 		if initializedProtocol == protocol then
@@ -215,7 +217,7 @@ function core.initialize(protocol, options)
 	end
 
 	-- finalize
-	fs.write_file("tezbox-initialized", protocol)
+	fs.write_file(initializedProtocolFilePath, protocol)
 end
 
 function core.run()
