@@ -74,6 +74,6 @@ To build TezBox follow these steps:
 
 ### Future development
 
-TezBox is going to follow official tezos releases and tag. You can expect new release shortly after the official release of the new tezos version.
+TezBox is going to follow official octez releases and tag. You can expect new release shortly after the official release of the new octez version.
 
-We would like to introduce tezbox minimal image with only the tezos node, baker, client and the minimal configuration eventually. But there is no ETA for this feature yet.
+We would like to introduce tezbox minimal image with only the octez node, baker, client and the minimal configuration eventually. But there is no ETA for this feature yet.
