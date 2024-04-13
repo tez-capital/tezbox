@@ -11,9 +11,18 @@ To use TezBox, you need to have OCI compatible container runtime installed on yo
 ```bash
 # to run chain with the O protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
 
 # to run chain with the P protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1 parisbox
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1 parisbox
+```
+You can list available protocols with the following command:
+```bash
+# docker run -it <image> list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v19.1 list-protocols
 ```
 
 ### Configuration
@@ -21,6 +30,8 @@ docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1 p
 All configuration files are located in the `/tezbox/configuration` directory and merged with overrides from `/tezbox/overrides` directory. You can either mount directly configuration files or user overrides which are merged with the files from the configuration directory. The merge is performed as deep merge with overwrite. Arrays are **NOT** concatenated, but replaced with the value from the overrides. Actual configuration used during the run is located in `/tezbox/context` and is a result of the merge of all configuration files created during the initialization of the container.
 
 NOTE: *It is not possible to define bootstrap_accounts through sandbox-parameters. Use `.../configuration/bakers.hjson` instead.*
+
+NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
 
 #### Accounts
 

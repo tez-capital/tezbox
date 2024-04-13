@@ -108,7 +108,7 @@ function core.initialize(protocol, options)
 	octez.reset() -- reset octez state
 	context.build() -- rebuild context
 
-	local proto = context.protocols[protocol] --[[@as ProtocolDefinition?]]
+	local proto = context.protocolMapping[protocol] --[[@as ProtocolDefinition?]]
 	if not proto then
 		log_error("protocol " .. protocol .. " not found in context")
 		os.exit(1)
@@ -168,7 +168,6 @@ function core.initialize(protocol, options)
 			account.pk,
 			tostring(account.balance)
 		})
-		
 		::continue::
 	end
 
@@ -218,6 +217,16 @@ function core.initialize(protocol, options)
 
 	-- finalize
 	fs.write_file(initializedProtocolFilePath, protocol)
+end
+
+function core.list_protocols()
+	context.build() -- rebuild context
+
+	local protocols = context.protocols
+	for protocol, protocolDetail in pairs(protocols) do
+		local aliases = util.merge_arrays({ protocolDetail.id, protocolDetail.short, protocolDetail.hash }, protocolDetail.aliases or {})
+		print(protocol .. " (available as: " .. string.join(", ", aliases) .. ")")
+	end
 end
 
 function core.run()

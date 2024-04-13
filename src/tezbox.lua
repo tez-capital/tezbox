@@ -28,6 +28,11 @@ if args.command == "init" or args.command == "initialize" then
 	os.exit(0)
 end
 
+if args.command == "list-protocols" then
+	core.list_protocols()
+	os.exit(0)
+end
+
 if args.command == "run" then
 	core.run()
 	os.exit(0)

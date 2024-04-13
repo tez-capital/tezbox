@@ -3,6 +3,7 @@ local hjson = require "hjson"
 local constants = require "box.constants"
 
 local context = {
+	protocolMapping = {},
 	protocols = {}
 }
 
@@ -76,6 +77,7 @@ function context.build()
 		asDirEntries = false,
 	}) --[=[@as string[]]=]
 
+	local protocolMapping = {}
 	local protocols = {}
 	for _, protocolDirectory in ipairs(protocolDirectories) do
 		local protocolFile = path.combine(protocolDirectory, constants.protocolFileId)
@@ -85,7 +87,7 @@ function context.build()
 			log_warn("valid protocol id not found in protocol file: " .. protocolFile .. ", skipping")
 			goto continue
 		end
-		if protocols[protocol.id] then
+		if protocolMapping[protocol.id] then
 			log_warn("duplicate protocol id found: " .. protocol.id .. ", skipping")
 			goto continue
 		end
@@ -100,21 +102,23 @@ function context.build()
 
 		protocol.path = protocolDirectory
 
-		protocols[string.lower(protocol.id)] = protocol
-		protocols[string.lower(protocol.hash)] = protocol
+		protocolMapping[string.lower(protocol.id)] = protocol
+		protocolMapping[string.lower(protocol.hash)] = protocol
+		protocols[protocol.id] = protocol
 		for _, alias in ipairs(protocol.aliases or {}) do
 			local alias = string.lower(alias)
-			if protocols[alias] then
+			if protocolMapping[alias] then
 				log_warn("duplicate protocol alias found: " .. alias .. ", skipping")
 				goto continue
 			end
-			protocols[alias] = protocol
+			protocolMapping[alias] = protocol
 			::continue::
 		end
 
 		::continue::
 	end
 
+	context.protocolMapping = protocolMapping
 	context.protocols = protocols
 
 	-- create sandbox.json
