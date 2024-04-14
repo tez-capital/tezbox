@@ -69,7 +69,7 @@ jobs:
       with:
         file: containers/tezos/Containerfile
         context: .
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=Proxford
           IMAGE_TAG=v19.1
@@ -84,7 +84,7 @@ jobs:
       with:
         file: containers/tezos/Containerfile
         context: .
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=Proxford,PtParisB
           IMAGE_TAG=octez-v20.0-rc1
