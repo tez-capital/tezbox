@@ -27,9 +27,30 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v19.2 list-p
 
 ### Configuration
 
-All configuration files are located in the `/tezbox/configuration` directory and merged with overrides from `/tezbox/overrides` directory. You can either mount directly configuration files or user overrides which are merged with the files from the configuration directory. The merge is performed as deep merge with overwrite. Arrays are **NOT** concatenated, but replaced with the value from the overrides. Actual configuration used during the run is located in `/tezbox/context` and is a result of the merge of all configuration files created during the initialization of the container.
+All configuration files are located in the `/tezbox/configuration` directory and merged with overrides from `/tezbox/overrides` directory. 
 
 NOTE: *It is not possible to define bootstrap_accounts through sandbox-parameters. Use `.../configuration/bakers.hjson` instead.*
+
+#### Overrides and Configuration through mounted volumes
+
+You can override any configuration file by mounting your own file to the `/tezbox/overrides` directory. The file will be merged with the default configuration. If you want to replace the whole configuration or file without merging, you can mount it to the `/tezbox/configuration` directory. The configuration is merged with the overrides and the result is stored in the `/tezbox/context` directory during the initialization of the container. **Array values are always replaced, not concatenated.**
+
+For example if you want to adjust block times, you can create `sandbox-override-parameters.hjson` file with the following content:
+```hjson
+minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
+```
+and run the container with the following command:
+```bash
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/Proxford/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+```
+You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
+
+Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
+
+```bash
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
 
