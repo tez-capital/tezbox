@@ -10,9 +10,9 @@ To use TezBox, you need to have OCI compatible container runtime installed on yo
 
 ```bash
 # to run chain with the O protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.2 oxfordbox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.2 oxfordbox
 
 # to run chain with the P protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1 parisbox
@@ -22,7 +22,7 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1 pa
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v19.1 list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v19.2 list-protocols
 ```
 
 ### Configuration
@@ -60,7 +60,7 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.1 oxfordbox
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v19.2 oxfordbox
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
