@@ -12,6 +12,7 @@ ENV ASCEND_SOCKET=/var/run/ascend.socket
 ENV ASCEND_LOGS=/var/log/ascend
 ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
+ENV HOME=/tezbox/data
 
 RUN printf '#!/bin/sh\n\
 if [ -z "$GITHUB_TOKEN" ]; then\n\

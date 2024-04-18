@@ -23,6 +23,8 @@ function octez.client.run(args, options)
 	if type(options) ~= "table" then options = {} end
 	if type(args) ~= "table" then args = {} end
 
+	log_debug("Running octez client with args: " .. string.join(" ", args))
+
 	return proc.spawn(env.octezClientBinary, args, {
 		username = options.user or env.user,
 		wait = true,
@@ -57,6 +59,8 @@ end
 function octez.node.run(args, options)
 	if type(options) ~= "table" then options = {} end
 	if type(args) ~= "table" then args = {} end
+
+	log_debug("Running octez node with args: " .. string.join(" ", args))
 
 	return proc.spawn(env.octezNodeBinary, args, {
 		username = options.user or env.user,
@@ -112,9 +116,15 @@ function octez.exec_with_node_running(exec, options)
 		"--sandbox=" .. path.combine(env.contextDirectory, "sandbox.json"),
 	}
 
+	local overrideEnv = {}
+	if env.homeDirectory == os.getenv("HOME") then
+		overrideEnv = { HOME = "/tmp" } -- octez node refuses to use HOME in sandbox mode so we need to override it to proceed
+	end
+
 	local nodeProc = proc.spawn(env.octezNodeBinary, args, {
 		username = options.user or env.user,
-		stdio = "inherit"
+		stdio = "inherit",
+		env = buildEnv(overrideEnv),
 	}) --[[@as EliProcess]]
 
 	local executed = false
