@@ -75,6 +75,19 @@ By default tezbox comes with these accounts:
 ```
 You can add modify as needed. Just mount your own file to `/tezbox/overrides/accounts.hjson` for override or `/tezbox/configuration/accounts.hjson` for full replacement.
 
+#### Services
+
+You can adjust service behavior by mounting your own configuration to `/tezbox/overrides/services/...` for override or `/tezbox/configuration/services/...` for full replacement.
+
+If you want to disable a service, you can create override with `autostart: false`. For example to disable baker service you would crease `baker.hjson` file:
+```hjson
+autostart: false
+```
+and mount it into overrides directory:
+```bash
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v19.2 oxfordbox
+```
+
 #### Chain Context
 
 Chain and protocol is automatically initialized only once during the first run. The chain and all runtime data are stored in `/tezbox/data` directory. If you want to persist your sandbox state just run it with mounted volume to `/tezbox/data` directory.
