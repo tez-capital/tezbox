@@ -1,3 +1,5 @@
+<p align="center"><img width="100" src="https://raw.githubusercontent.com/tez-capital/tezbox/main/assets/logo.svg" alt="TEZBOX logo"></p>
+
 ## TEZBOX - tezos sandbox by tez.capital
 
 ### What is TezBox?
