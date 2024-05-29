@@ -14,3 +14,8 @@ end
 if header.level <= pastLevel then
 	os.exit(1)
 end
+
+if not fs.safe_write_file(stateFile, tostring(header.level)) then
+	print("Failed to write state file")
+	os.exit(1)
+end
