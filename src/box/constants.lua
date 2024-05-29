@@ -5,5 +5,6 @@ return {
 	},
 	protocolFileId = "protocol.json",
 	sandboxParametersFileId = "sandbox-parameters.json",
-	voteFileId = "vote-file.json"
+	voteFileId = "vote-file.json",
+	MUTEZ_MULTIPLIER = 1000000
 }

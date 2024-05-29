@@ -3,6 +3,7 @@ local octez = require 'box.octez'
 local env = require 'box.env'
 local context = require 'box.context'
 local constants = require 'box.constants'
+local bigint = require"bigint"
 
 local core = {}
 
@@ -12,6 +13,32 @@ local core = {}
 ---@field hash string
 ---@field aliases string[]?
 ---@field path string
+
+local function split_account_balances(accounts, bakers)
+	local bakerAccounts = table.values(bakers)
+
+	local index = 1
+
+	for _, account in pairs(accounts) do
+		if not account.balance then
+			goto continue
+		end
+		if not account.pkh then
+			goto continue
+		end
+		local baker = bakerAccounts[index]
+		if type(baker.deposits) ~= "table" then
+			baker.deposits = {}
+		end
+		baker.deposits[account.pkh] = account.balance
+
+		index = index + 1
+		if index > #bakerAccounts then
+			index = 1
+		end
+		::continue::
+	end
+end
 
 ---@param protocol ProtocolDefinition
 local function inject_ascend_services(protocol)
@@ -155,20 +182,28 @@ function core.initialize(protocol, options)
 
 	local sandboxParametersFile = path.combine(proto.path, constants.sandboxParametersFileId)
 
+	-- split account balances
+	split_account_balances(accounts, bakerAccounts)
+
 	-- inject accounts to sandbox parameters
 	local parametersHjson = fs.read_file(sandboxParametersFile)
 	local parameters = hjson.decode(parametersHjson)
 
 	parameters.bootstrap_accounts = {}
-	for _, account in pairs(bakerAccounts) do
+	for accountId, account in pairs(bakerAccounts) do
 		if (type(account.balance) ~= "number" and type(account.balance) ~= "string") or type(account.pk) ~= "string" then
-			goto continue
+			error("invalid baker balance or pk for account " .. tostring(accountId))
 		end
+		local balance = account.balance
+		local extra = table.reduce(table.values(account.deposits or {}), function(acc, v)
+			return acc + bigint.new(v)
+		end, bigint.new(0))
+		balance = bigint.new(balance) + extra
+
 		table.insert(parameters.bootstrap_accounts, {
 			account.pk,
-			tostring(account.balance)
+			tostring(balance * constants.MUTEZ_MULTIPLIER)
 		})
-		::continue::
 	end
 
 	fs.write_file(sandboxParametersFile, hjson.encode_to_json(parameters))
@@ -184,22 +219,27 @@ function core.initialize(protocol, options)
 
 		-- run baker and inject transfers
 		local proc = octez.baker.run(proto.short, {
-			"run" , "remotely", "--votefile", path.combine(proto.path, constants.voteFileId) 
+			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId)
 		})
 
-		local transfers = {}
-		for _, account in pairs(accounts) do
-			if not account.balance then
+		os.sleep(2)
+		for bakerId, baker in pairs(bakerAccounts) do
+			if not baker.deposits then
 				goto continue
 			end
-			table.insert(transfers, {
-				destination = account.pkh,
-				amount = tostring(account.balance)
-			})
+			local transfers = {}
+			for pkh, balance in pairs(baker.deposits) do
+				table.insert(transfers, {
+					destination = pkh,
+					amount = tostring(balance)
+				})
+			end
+			local result = octez.client.transfer(bakerId, transfers)
+			if result.exitcode ~= 0 then
+				error("failed to send deposit from baker " .. bakerId)
+			end
 			::continue::
 		end
-		os.sleep(2)
-		local result = octez.client.transfer("faucet", transfers)
 		proc:kill()
 		proc:wait(30)
 		if proc:get_exitcode() < 0 then
@@ -224,7 +264,8 @@ function core.list_protocols()
 
 	local protocols = context.protocols
 	for protocol, protocolDetail in pairs(protocols) do
-		local aliases = util.merge_arrays({ protocolDetail.id, protocolDetail.short, protocolDetail.hash }, protocolDetail.aliases or {})
+		local aliases = util.merge_arrays({ protocolDetail.id, protocolDetail.short, protocolDetail.hash },
+			protocolDetail.aliases or {})
 		print(protocol .. " (available as: " .. string.join(", ", aliases) .. ")")
 	end
 end
