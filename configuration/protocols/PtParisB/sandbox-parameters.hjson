@@ -11,7 +11,7 @@
   "proof_of_work_threshold": "281474976710655",
   "minimal_stake": "6000000000",
   "minimal_frozen_stake": "600000000",
-  "vdf_difficulty": "2000000000",
+  "vdf_difficulty": "10000000000",
   "origination_size": 257,
   "issuance_weights": {
     "base_total_issued_per_minute": "80007812",
