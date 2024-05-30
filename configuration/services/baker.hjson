@@ -18,8 +18,8 @@
     healthcheck: {
         name: baker
         action: restart
-        delay: 30
-        interval: 30
+        delay: 15
+        interval: 15
         retries: 1
     }
 }
