@@ -11,7 +11,21 @@ if ok then
 	pastLevel = tonumber(pastLevelString) or 0
 end
 
+local function remove_highwatermarks()
+	-- rm /tezbox/data/.tezos-client/NetXtJqPyJGB6_highwatermarks
+	-- this is just to improve UX of tezbox, we wont double bake with one baker, and octez 20 tends to get stuck
+	-- because of block in future
+	local candidates = fs.read_dir("/tezbox/data/.tezos-client/", { returnFullPaths = true }) --[=[@as string[]]=]
+	for _, candidate in ipairs(candidates) do
+		if candidate:find("highwatermarks") then
+			fs.safe_remove(candidate)
+		end
+	end
+end
+
 if header.level <= pastLevel then
+	-- remove highwatermarks 
+	remove_highwatermarks()
 	os.exit(1)
 end
 

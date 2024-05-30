@@ -1,17 +1,17 @@
 {
-  "consensus_rights_delay": 2,
+  "consensus_rights_delay": 3,
   "blocks_preservation_cycles": 1,
-  "delegate_parameters_activation_delay": 5,
+  "delegate_parameters_activation_delay": 3,
   "blocks_per_cycle": 12288,
   "blocks_per_commitment": 96,
   "nonce_revelation_threshold": 768,
   "cycles_per_voting_period": 1,
   "hard_gas_limit_per_operation": "1040000",
   "hard_gas_limit_per_block": "1733333",
-  "proof_of_work_threshold": "-1",
+  "proof_of_work_threshold": "281474976710655",
   "minimal_stake": "6000000000",
   "minimal_frozen_stake": "600000000",
-  "vdf_difficulty": "10000000000",
+  "vdf_difficulty": "2000000000",
   "origination_size": 257,
   "issuance_weights": {
     "base_total_issued_per_minute": "80007812",
@@ -74,8 +74,8 @@
       "Blake2B": 0
     },
     "metadata": 0,
-    "dal_page": 513,
-    "dal_parameters": 513,
+    "dal_page": 6422529,
+    "dal_parameters": 6422529,
     "dal_attested_slots_validity_lag": 241920
   },
   "smart_rollup_private_enable": true,
@@ -109,7 +109,7 @@
     "max_bonus": "50000000000000",
     "growth_rate": {
       "numerator": "1",
-      "denominator": "25"
+      "denominator": "100"
     },
     "center_dz": {
       "numerator": "1",
