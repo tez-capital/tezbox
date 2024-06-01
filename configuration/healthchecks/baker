@@ -2,11 +2,11 @@
 local hjson = require "hjson"
 local stateFile = "/tmp/baker-healthcheck-state"
 
-local response = net.download_string("http://localhost:8732/chains/main/blocks/head/header")
+local response = net.download_string("http://127.0.0.1:8732/chains/main/blocks/head/header")
 local header = hjson.decode(response)
 
 local ok, pastLevelString = fs.safe_read_file(stateFile)
-local pastLevel = 0 
+local pastLevel = 0
 if ok then
 	pastLevel = tonumber(pastLevelString) or 0
 end
