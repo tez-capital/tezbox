@@ -63,7 +63,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: build tezos v20.0
+    - name: build tezos v20.1
       uses: docker/build-push-action@v5
       if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
       with:
@@ -71,14 +71,14 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=Proxford,PtParisB
-          IMAGE_TAG=octez-v20.0
+          PROTOCOLS=PtParisB,PsParisC
+          IMAGE_TAG=octez-v20.1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v20.0.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.0,ghcr.io/tez-capital/tezbox:latest
+        tags: ghcr.io/tez-capital/tezbox:tezos-v20.1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.1,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
 
-    # - name: build tezos v20.0-rc1
+    # - name: build tezos v20.1-rc1
     #   uses: docker/build-push-action@v5
     #   if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
     #   with:
@@ -87,9 +87,9 @@ jobs:
     #     platforms: linux/amd64,linux/arm64
     #     build-args: |
     #       PROTOCOLS=Proxford,PtParisB
-    #       IMAGE_TAG=octez-v20.0-rc1
+    #       IMAGE_TAG=octez-v20.1-rc1
     #       GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-    #     tags: ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.0-rc1
+    #     tags: ghcr.io/tez-capital/tezbox:tezos-v20.1-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.1-rc1
     #     push: true
     #     provenance: false
 

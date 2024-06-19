@@ -3,7 +3,7 @@ ARG IMAGE_TAG=latest
 FROM docker.io/alpine:${IMAGE_TAG}
 
 ARG TEZOS_VERSION=19.1
-ARG PROTOCOLS=oxfordbox
+ARG PROTOCOLS=parisbox
 
 ENV ASCEND_SERVICES=/ascend/services
 ENV ASCEND_HEALTHCHECKS=/ascend/healthchecks
@@ -41,4 +41,4 @@ RUN eli /tmp/download-binaries.lua && rm /tmp/download-binaries.lua
 
 USER root
 ENTRYPOINT [ "ascend" ]
-CMD ["oxfordbox"]
+CMD ["parisbox"]
