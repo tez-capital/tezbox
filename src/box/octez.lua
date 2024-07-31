@@ -4,7 +4,8 @@ local env = require "box.env"
 local octez = {
 	client = {},
 	node = {},
-	baker = {}
+	baker = {},
+	dal = {}
 }
 
 ---@param overrides table<string, string>
@@ -159,6 +160,15 @@ function octez.baker.run(shortProtocol, args, options)
 
 	return proc.spawn(env.octezBakerBinary .. "-" .. shortProtocol, args, {
 		username = options.user or env.user,
+		wait = false,
+		stdio = "inherit",
+		env = buildEnv( { HOME = env.homeDirectory } ),
+	}) --[[@as SpawnResult]]
+end
+
+function octez.dal.run()
+	return proc.spawn(env.octezDalBinary, {"run"}, {
+		username = env.user,
 		wait = false,
 		stdio = "inherit",
 		env = buildEnv( { HOME = env.homeDirectory } ),
