@@ -5,6 +5,8 @@
         remotely
         --votefile
         ${VOTE_FILE}
+        --dal-node
+        http://127.0.0.1:10732
     ]
     environment: {
         HOME: ${HOME}

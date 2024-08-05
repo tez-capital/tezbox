@@ -217,13 +217,9 @@ function core.initialize(protocol, options)
 			error("failed to activate protocol " .. proto.hash)
 		end
 
-		-- run DAL node and wait for it to start
-		local dalproc = octez.dal.run()
-		os.sleep(30)
-
 		-- run baker and inject transfers
 		local proc = octez.baker.run(proto.short, {
-			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId), "--liquidity-baking-toggle-vote", "on", "--adaptive-issuance-vote", "on", "--dal-node", "http://127.0.0.1:10732"
+			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId), "--liquidity-baking-toggle-vote", "on", "--adaptive-issuance-vote", "on"
 		})
 
 		os.sleep(2)
