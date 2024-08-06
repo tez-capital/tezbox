@@ -2,6 +2,8 @@
     executable: octez-dal-node
     args: [
         run
+        --endpoint
+        http://0.0.0.0:8732
         --observer-profiles=0
         --data-dir
         _dal_node
