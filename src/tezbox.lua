@@ -24,6 +24,15 @@ if args.command == "init" or args.command == "initialize" then
 		options.injectServices = true
 	end
 
+	if args.options["with-dal"] then
+		options.withDal = true
+	end
+
+	if type(args.options["with-init"]) == "string" then
+		options.init = args.options["with-init"]
+	end
+
+
 	core.initialize(protocol, options)
 	os.exit(0)
 end
