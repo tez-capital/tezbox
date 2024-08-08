@@ -3,7 +3,7 @@ local octez = require 'box.octez'
 local env = require 'box.env'
 local context = require 'box.context'
 local constants = require 'box.constants'
-local bigint = require"bigint"
+local bigint = require "bigint"
 
 local core = {}
 
@@ -41,7 +41,8 @@ local function split_account_balances(accounts, bakers)
 end
 
 ---@param protocol ProtocolDefinition
-local function inject_ascend_services(protocol)
+---@param extraServices string[]
+local function inject_ascend_services(protocol, extraServices)
 	local servicesDirectory = os.getenv "ASCEND_SERVICES"
 	if not servicesDirectory then
 		log_error("ASCEND_SERVICES environment variable not set")
@@ -61,13 +62,18 @@ local function inject_ascend_services(protocol)
 
 	local serviceTemplatesDirectory = path.combine(env.contextDirectory, "services")
 	local serviceTemplateFiles = fs.read_dir(serviceTemplatesDirectory, {
-		recurse = true,
+		recurse = false,
 		returnFullPaths = false,
 		asDirEntries = false,
 	}) --[=[@as string[]]=]
 
 	for _, serviceTemplateFileName in ipairs(serviceTemplateFiles) do
-		local serviceTemplate = fs.read_file(path.combine(serviceTemplatesDirectory, serviceTemplateFileName))
+		local serviceTemplatePath = path.combine(serviceTemplatesDirectory, serviceTemplateFileName)
+		if not serviceTemplatePath:match("%.json$") then
+			goto continue
+		end
+
+		local serviceTemplate = fs.read_file(serviceTemplatePath)
 		local service = string.interpolate(serviceTemplate, vars)
 		local serviceFilePath = path.combine(servicesDirectory, serviceTemplateFileName)
 		if serviceFilePath:match("%.json$") then -- services have to be hjson files
@@ -77,6 +83,21 @@ local function inject_ascend_services(protocol)
 		local ok = fs.safe_write_file(serviceFilePath, service)
 		if not ok then
 			log_error("failed to write service file " .. serviceFilePath)
+			os.exit(1)
+		end
+		::continue::
+	end
+
+	local serviceExtraTemplatesDirectory = path.combine(serviceTemplatesDirectory, "extra")
+	for _, extraServiceFileName in ipairs(extraServices) do
+		local serviceTemplatePath = path.combine(serviceExtraTemplatesDirectory, extraServiceFileName .. ".json")
+		local serviceFilePath = path.combine(servicesDirectory, extraServiceFileName .. ".hjson")
+
+		local serviceTemplate = fs.read_file(serviceTemplatePath)
+		local service = string.interpolate(serviceTemplate, vars)
+		local ok = fs.safe_write_file(serviceFilePath, service)
+		if not ok then
+			log_error("failed to copy extra service file " .. serviceTemplatePath .. " to " .. serviceFilePath)
 			os.exit(1)
 		end
 	end
@@ -112,6 +133,8 @@ end
 
 ---@class TezboxInitializeOptions
 ---@field injectServices boolean?
+---@field withDal boolean?
+---@field init string?
 
 ---@param protocol string
 ---@param options TezboxInitializeOptions
@@ -219,7 +242,7 @@ function core.initialize(protocol, options)
 
 		-- run baker and inject transfers
 		local proc = octez.baker.run(proto.short, {
-			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId), "--liquidity-baking-toggle-vote", "on", "--adaptive-issuance-vote", "on", "--dal-node", "http://127.0.0.1:10732"
+			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId)
 		})
 
 		os.sleep(2)
@@ -252,7 +275,24 @@ function core.initialize(protocol, options)
 
 	-- patch services
 	if options.injectServices then
-		inject_ascend_services(proto)
+		local extraServices = {}
+		if options.withDal then
+			for _, service in ipairs(constants.dal.services) do
+				table.insert(extraServices, service)
+			end
+		end
+
+		inject_ascend_services(proto, extraServices)
+	end
+
+	if options.withDal and not octez.dal.install_trusted_setup() then
+		log_error("failed to install dal trusted setup")
+		os.exit(1)
+	end
+
+	if type(options.init) == "string" and not os.execute(options.init) then
+		log_error("failed to run init script")
+		os.exit(1)
 	end
 
 	-- finalize

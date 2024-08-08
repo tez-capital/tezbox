@@ -1,5 +1,6 @@
 local signal = require "os.signal"
 local env = require "box.env"
+local constants = require "box.constants"
 
 local octez = {
 	client = {},
@@ -166,13 +167,36 @@ function octez.baker.run(shortProtocol, args, options)
 	}) --[[@as SpawnResult]]
 end
 
-function octez.dal.run()
-	return proc.spawn(env.octezDalBinary, {"run"}, {
+function octez.dal.install_trusted_setup()
+	log_info("installing dal trusted setup")
+	local ok = net.safe_download_file(constants.dal.scripts.setup, "/tmp/install_dal_trusted_setup.sh")
+	if not ok then
+		log_error("failed to download dal setup script")
+		return false
+	end
+
+	for _, dependency in ipairs(constants.dal.scripts.dependencies) do
+		local ok = net.safe_download_file(dependency, "/tmp/" .. path.file(dependency))
+		if not ok then
+			log_error("failed to download dal setup script dependency " .. dependency)
+			return false
+		end
+	end
+
+	local args = { "/tmp/install_dal_trusted_setup.sh" }
+
+	if os.execute("octez-node --version | grep '20.'") then
+		table.insert(args, "--legacy")
+	end
+
+	local result = proc.spawn("sh", args, {
 		username = env.user,
-		wait = false,
+		wait = true,
 		stdio = "inherit",
 		env = buildEnv( { HOME = env.homeDirectory } ),
 	}) --[[@as SpawnResult]]
+
+	return result.exitcode == 0
 end
 
 function octez.reset()

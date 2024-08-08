@@ -5,8 +5,6 @@
         --endpoint
         http://127.0.0.1:8732
         --observer-profiles=0
-        --data-dir
-        _dal_node
     ]
     environment: {
         HOME: ${HOME}
