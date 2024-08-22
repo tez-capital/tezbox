@@ -6,7 +6,7 @@
         local
         node
         ${HOME}/.tezos-node
-        baker1
+        baker2
         --votefile
         ${VOTE_FILE}
         --dal-node

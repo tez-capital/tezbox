@@ -4,7 +4,8 @@
         run
         --endpoint
         http://127.0.0.1:8732
-        --observer-profiles=0
+        --producer-profiles=0
+        --public-addr=0.0.0.0:10732
     ]
     environment: {
         HOME: ${HOME}

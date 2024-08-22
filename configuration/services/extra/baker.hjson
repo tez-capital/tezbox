@@ -2,7 +2,11 @@
     executable: octez-baker-${PROTOCOL_SHORT}
     args: [
         run
-        remotely
+        with
+        local
+        node
+        ${HOME}/.tezos-node
+        baker1
         --votefile
         ${VOTE_FILE}
         --dal-node
