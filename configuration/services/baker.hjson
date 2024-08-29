@@ -21,11 +21,11 @@
     restart_max_retries: 0 # unlimited
     stop_timeout: 300
     user: ${USER}
-    healthcheck: {
-        name: baker
-        action: restart
-        delay: 15
-        interval: 15
-        retries: 1
-    }
+    // healthcheck: {
+    //     name: baker
+    //     action: restart
+    //     delay: 15
+    //     interval: 15
+    //     retries: 1
+    // }
 }
