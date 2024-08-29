@@ -12,6 +12,7 @@
         --dal-node
         http://127.0.0.1:10732
     ]
+    output: file:/log/baker2.log
     environment: {
         HOME: ${HOME}
         TEZOS_LOG: "* -> info"

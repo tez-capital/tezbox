@@ -15,8 +15,7 @@ return {
 			}
 		},
 		services = {
-			"dal",
-			"baker"
+			"dal"
 		}
 	}
 }

@@ -7,6 +7,7 @@
         --producer-profiles=0
         --public-addr=0.0.0.0:10732
     ]
+    output: file:/log/dal.log
     environment: {
         HOME: ${HOME}
         TEZOS_LOG: "* -> info"

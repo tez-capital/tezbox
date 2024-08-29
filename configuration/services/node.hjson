@@ -11,6 +11,7 @@
 		--peer=localhost:9732
 		--private-mode
     ]
+    output: file:/log/node.log
     environment: {
         HOME: ${HOME}
         TEZOS_LOG: "* -> info"
