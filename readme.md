@@ -15,8 +15,17 @@ To use TezBox, you need to have OCI compatible container runtime installed on yo
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 parisbox
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 parisbox
-
 ```
+
+#### Qena
+
+```bash
+# to run chain with the PsParisC protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 qenabox
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 qenabox
+```
+
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols

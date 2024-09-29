@@ -1,4 +1,4 @@
-#!/usr/sbin/eli
+#!/usr/bin/env eli
 require "util.log" ("tezbox")
 
 local args = require "util.args"
