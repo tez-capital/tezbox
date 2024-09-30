@@ -41,20 +41,20 @@ RUN echo $PROTOCOLS
 ADD tools/cleanup-protocols.lua /tmp/cleanup-protocols.lua
 RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
 
-RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-  auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-node -O /usr/local/bin/octez-node && \
-  chmod +x /usr/local/bin/octez-node; \
-fi
+# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
+#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-node -O /usr/local/bin/octez-node && \
+#   chmod +x /usr/local/bin/octez-node; \
+# fi
 
-RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-  auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-baker-qena -O /usr/local/bin/octez-baker-PsqenaVw && \
-  chmod +x /usr/local/bin/octez-baker-PsqenaVw; \
-fi
+# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
+#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-baker-qena -O /usr/local/bin/octez-baker-PsqenaVw && \
+#   chmod +x /usr/local/bin/octez-baker-PsqenaVw; \
+# fi
 
-RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-  auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-client -O /usr/local/bin/octez-client && \
-  chmod +x /usr/local/bin/octez-client; \
-fi
+# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
+#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-client -O /usr/local/bin/octez-client && \
+#   chmod +x /usr/local/bin/octez-client; \
+# fi
 
 USER root
 ENTRYPOINT [ "ascend" ]
