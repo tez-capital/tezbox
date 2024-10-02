@@ -1,4 +1,4 @@
-#!/usr/sbin/eli
+#!/usr/bin/env eli
 local hjson = require "hjson"
 local stateFile = "/tmp/baker-healthcheck-state"
 
