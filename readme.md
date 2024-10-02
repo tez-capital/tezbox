@@ -12,9 +12,9 @@ To use TezBox, you need to have OCI compatible container runtime installed on yo
 
 ```bash
 # to run chain with the PsParisC protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 parisbox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 parisbox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 parisbox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 parisbox
 ```
 
 #### Qena
@@ -29,7 +29,7 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2.202409
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.2 list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.3 list-protocols
 ```
 
 ### Configuration
@@ -48,15 +48,15 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 ```
 and run the container with the following command:
 ```bash
-# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.2 oxfordbox
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/Proxford/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.2 oxfordbox
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/Proxford/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
 Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
 
 ```bash
-docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v20.2 oxfordbox
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
 ```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
@@ -92,7 +92,7 @@ autostart: false
 ```
 and mount it into overrides directory:
 ```bash
-docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.2 oxfordbox
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
 ```
 
 #### Chain Context
@@ -101,7 +101,7 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.2 oxfordbox
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
@@ -122,7 +122,7 @@ To build TezBox follow these steps:
 3. build lua sources (you can get eli [here](https://github.com/alis-is/eli/releases))
    - `eli build/build.lua`
 4. build the image
-   - `docker build --build-arg="PROTOCOLS=PsParisC" --build-arg="IMAGE_TAG=octez-v20.2" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
+   - `docker build --build-arg="PROTOCOLS=PsParisC" --build-arg="IMAGE_TAG=octez-v20.3" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
 
 ### Future development
 
