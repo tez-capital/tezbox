@@ -1,0 +1,19 @@
+{
+    executable: octez-dal-node
+    args: [
+        run
+        --endpoint
+        http://127.0.0.1:8732
+        --producer-profiles=0
+        --public-addr=0.0.0.0:10732
+    ]
+    output: file:/log/dal.log
+    environment: {
+        HOME: ${HOME}
+        TEZOS_LOG: "* -> info"
+    }
+    restart: always
+    restart_delay: 20
+    stop_timeout: 300
+    user: ${USER}
+}

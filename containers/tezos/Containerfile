@@ -14,6 +14,9 @@ ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
 ENV HOME=/tezbox/data
 
+# dal scripts need curl
+RUN apk add curl
+
 RUN printf '#!/bin/sh\n\
 if [ -z "$GITHUB_TOKEN" ]; then\n\
   wget "$@" \n\
@@ -32,29 +35,14 @@ RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/c
 COPY configuration /tezbox/configuration
 RUN chown -R tezos:tezos /tezbox
 
-COPY bin/tezbox /usr/local/bin/tezbox
-RUN chmod +x /usr/local/bin/tezbox
-RUN chown -R tezos:nogroup /usr/local/bin/tezbox
+COPY bin/tezbox /usr/bin/tezbox
+RUN chmod +x /usr/bin/tezbox
+RUN chown -R tezos:nogroup /usr/bin/tezbox
 
 ENV PROTOCOLS=${PROTOCOLS}
 RUN echo $PROTOCOLS
 ADD tools/cleanup-protocols.lua /tmp/cleanup-protocols.lua
 RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
-
-# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-node -O /usr/local/bin/octez-node && \
-#   chmod +x /usr/local/bin/octez-node; \
-# fi
-
-# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-baker-qena -O /usr/local/bin/octez-baker-PsqenaVw && \
-#   chmod +x /usr/local/bin/octez-baker-PsqenaVw; \
-# fi
-
-# RUN if echo "$PROTOCOLS" | grep -q "PsqenaVw"; then \
-#   auth_wget https://github.com/tez-capital/tezos/releases/download/qena/octez-client -O /usr/local/bin/octez-client && \
-#   chmod +x /usr/local/bin/octez-client; \
-# fi
 
 USER root
 ENTRYPOINT [ "ascend" ]

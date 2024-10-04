@@ -28,9 +28,9 @@ RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/c
 COPY configuration /tezbox/configuration
 RUN chown -R tezos:tezos /tezbox
 
-COPY bin/tezbox /usr/local/bin/tezbox
-RUN chmod +x /usr/local/bin/tezbox
-RUN chown -R tezos:nogroup /usr/local/bin/tezbox
+COPY bin/tezbox /usr/bin/tezbox
+RUN chmod +x /usr/bin/tezbox
+RUN chown -R tezos:nogroup /usr/bin/tezbox
 
 ENV PROTOCOLS=${PROTOCOLS}
 RUN echo $PROTOCOLS
