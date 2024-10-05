@@ -1,18 +1,6 @@
 {
     executable: octez-baker-${PROTOCOL_SHORT}
-    args: [
-        run
-        with
-        local
-        node
-        ${HOME}/.tezos-node
-        baker1
-        --votefile
-        ${VOTE_FILE}
-        --dal-node
-        http://127.0.0.1:10732
-    ]
-    output: file:/log/baker.log
+    args: ${BAKER_ARGS}
     environment: {
         HOME: ${HOME}
         TEZOS_LOG: "* -> info"

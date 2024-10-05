@@ -9,7 +9,7 @@ USER root
 ENV ASCEND_SERVICES=/ascend/services
 ENV ASCEND_HEALTHCHECKS=/ascend/healthchecks
 ENV ASCEND_SOCKET=/var/run/ascend.socket
-ENV ASCEND_LOGS=/var/log/ascend
+ENV ASCEND_LOGS=/ascend/logs
 ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
 ENV HOME=/tezbox/data

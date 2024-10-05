@@ -15,11 +15,11 @@ local function buildEnv(overrides)
 end
 
 ---@class RunClientOptions
----@field user string
+---@field user string?
 
 ---runs octez client
 ---@param args string[]
----@param user string
+---@param options RunClientOptions?
 ---@return SpawnResult
 function octez.client.run(args, options)
 	if type(options) ~= "table" then options = {} end
@@ -164,7 +164,7 @@ function octez.baker.run(shortProtocol, args, options)
 		wait = false,
 		stdio = "inherit",
 		env = buildEnv( { HOME = env.homeDirectory } ),
-	}) --[[@as SpawnResult]]
+	}) --[[@as EliProcess]]
 end
 
 function octez.dal.install_trusted_setup()

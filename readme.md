@@ -6,6 +6,11 @@ background20<p align="center"><img width="150" src="https://raw.githubuserconten
 
 TezBox is a tezos sandbox that allows you to run a minimal local tezos chain with a single command. It is designed to be a simple and easy to use tool for developers who want to quickly test their smart contracts or dapps on a local tezos chain.
 
+⚠️⚠️⚠️ BREAKING 0.3.0 ⚠️⚠️⚠️
+
+- output of services is not logged into console. See [Logs](#logs) section for more details.
+- each baker runs as separate process
+
 ### How to use TezBox?
 
 To use TezBox, you need to have OCI compatible container runtime installed on your machine (e.g. docker, podman...). You can run TezBox with the following command:
@@ -30,6 +35,21 @@ You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
 docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.3 list-protocols
+```
+
+#### Logs
+
+Output from each service are stored in /ascend/logs within the container. To access the logs without entering the container, mount this directory from outside the container.
+
+#### Dal
+
+To run a dal within tezbox start tezbox with `--with-dal` option as follows:
+
+```bash
+# to run chain with the PsParisC protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 parisbox --with-dal
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 parisbox --with-dal
 ```
 
 ### Configuration
