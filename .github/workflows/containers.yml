@@ -69,7 +69,7 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=PsParisC,PsqenaVw
+          PROTOCOLS=PsParisC,PsquebeC
           IMAGE_TAG=octez-v21.0-rc1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1
@@ -83,7 +83,7 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=PsParisC,PsqenaVw
+          PROTOCOLS=PsParisC,PsQuebecB
           IMAGE_TAG=octez-v21.0-rc2
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2
