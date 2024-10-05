@@ -62,18 +62,46 @@ jobs:
         push: true
         provenance: false
 
-    # - name: build tezos v20.3
-    #   uses: docker/build-push-action@v5
-    #   with:
-    #     file: containers/tezos/Containerfile
-    #     context: .
-    #     platforms: linux/amd64,linux/arm64
-    #     build-args: |
-    #       PROTOCOLS=PsParisC,PsqenaVw
-    #       IMAGE_TAG=octez-v20.3
-    #       GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-    #     tags: ghcr.io/tez-capital/tezbox:tezos-v20.3.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v20.3
-    #     push: true
-    #     provenance: false
+    - name: build tezos v21.0-rc1
+      uses: docker/build-push-action@v5
+      with:
+        file: containers/tezos/Containerfile
+        context: .
+        platforms: linux/amd64,linux/arm64
+        build-args: |
+          PROTOCOLS=PsParisC,PsqenaVw
+          IMAGE_TAG=octez-v21.0-rc1
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1
+        push: true
+        provenance: false
+
+    - name: build tezos v21.0-rc2
+      uses: docker/build-push-action@v5
+      with:
+        file: containers/tezos/Containerfile
+        context: .
+        platforms: linux/amd64,linux/arm64
+        build-args: |
+          PROTOCOLS=PsParisC,PsqenaVw
+          IMAGE_TAG=octez-v21.0-rc2
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2
+        push: true
+        provenance: false
+
+    - name: build tezos v21.0-rc3
+      uses: docker/build-push-action@v5
+      with:
+        file: containers/tezos/Containerfile
+        context: .
+        platforms: linux/amd64,linux/arm64
+        build-args: |
+          PROTOCOLS=PsParisC,PsqenaVw
+          IMAGE_TAG=octez-v21.0-rc3
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc3.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc3
+        push: true
+        provenance: false
 
 
