@@ -1,10 +1,12 @@
 local signal = require "os.signal"
 local env = require "box.env"
+local constants = require "box.constants"
 
 local octez = {
 	client = {},
 	node = {},
-	baker = {}
+	baker = {},
+	dal = {}
 }
 
 ---@param overrides table<string, string>
@@ -13,11 +15,11 @@ local function buildEnv(overrides)
 end
 
 ---@class RunClientOptions
----@field user string
+---@field user string?
 
 ---runs octez client
 ---@param args string[]
----@param user string
+---@param options RunClientOptions?
 ---@return SpawnResult
 function octez.client.run(args, options)
 	if type(options) ~= "table" then options = {} end
@@ -162,7 +164,39 @@ function octez.baker.run(shortProtocol, args, options)
 		wait = false,
 		stdio = "inherit",
 		env = buildEnv( { HOME = env.homeDirectory } ),
+	}) --[[@as EliProcess]]
+end
+
+function octez.dal.install_trusted_setup()
+	log_info("installing dal trusted setup")
+	local ok = net.safe_download_file(constants.dal.scripts.setup, "/tmp/install_dal_trusted_setup.sh")
+	if not ok then
+		log_error("failed to download dal setup script")
+		return false
+	end
+
+	for _, dependency in ipairs(constants.dal.scripts.dependencies) do
+		local ok = net.safe_download_file(dependency, "/tmp/" .. path.file(dependency))
+		if not ok then
+			log_error("failed to download dal setup script dependency " .. dependency)
+			return false
+		end
+	end
+
+	local args = { "/tmp/install_dal_trusted_setup.sh" }
+
+	if os.execute("octez-node --version | grep '20.'") then
+		table.insert(args, "--legacy")
+	end
+
+	local result = proc.spawn("sh", args, {
+		username = env.user,
+		wait = true,
+		stdio = "inherit",
+		env = buildEnv( { HOME = env.homeDirectory } ),
 	}) --[[@as SpawnResult]]
+
+	return result.exitcode == 0
 end
 
 function octez.reset()

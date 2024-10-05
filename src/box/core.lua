@@ -3,7 +3,7 @@ local octez = require 'box.octez'
 local env = require 'box.env'
 local context = require 'box.context'
 local constants = require 'box.constants'
-local bigint = require"bigint"
+local bigint = require "bigint"
 
 local core = {}
 
@@ -40,8 +40,21 @@ local function split_account_balances(accounts, bakers)
 	end
 end
 
+---@class injectServicesOptions
+---@field withDal boolean?
+
 ---@param protocol ProtocolDefinition
-local function inject_ascend_services(protocol)
+---@param bakers table<string, table>
+---@param options injectServicesOptions?
+local function inject_ascend_services(protocol, bakers, options)
+	if type(options) ~= "table" then options = {} end
+	local extraServices = {}
+	if options.withDal then
+		for _, service in ipairs(constants.dal.services) do
+			table.insert(extraServices, service)
+		end
+	end
+
 	local servicesDirectory = os.getenv "ASCEND_SERVICES"
 	if not servicesDirectory then
 		log_error("ASCEND_SERVICES environment variable not set")
@@ -59,17 +72,22 @@ local function inject_ascend_services(protocol)
 	}
 	vars = util.merge_tables(vars, contextVars, { overwrite = true })
 
-	local serviceTemplatesDirectory = path.combine(env.contextDirectory, "services")
-	local serviceTemplateFiles = fs.read_dir(serviceTemplatesDirectory, {
-		recurse = true,
+	local serviceDirectory = path.combine(env.contextDirectory, "services")
+	local serviceFiles = fs.read_dir(serviceDirectory, {
+		recurse = false,
 		returnFullPaths = false,
 		asDirEntries = false,
 	}) --[=[@as string[]]=]
 
-	for _, serviceTemplateFileName in ipairs(serviceTemplateFiles) do
-		local serviceTemplate = fs.read_file(path.combine(serviceTemplatesDirectory, serviceTemplateFileName))
+	for _, serviceFileName in ipairs(serviceFiles) do
+		local servicePath = path.combine(serviceDirectory, serviceFileName)
+		if not servicePath:match("%.json$") then
+			goto continue
+		end
+
+		local serviceTemplate = fs.read_file(servicePath)
 		local service = string.interpolate(serviceTemplate, vars)
-		local serviceFilePath = path.combine(servicesDirectory, serviceTemplateFileName)
+		local serviceFilePath = path.combine(servicesDirectory, serviceFileName)
 		if serviceFilePath:match("%.json$") then -- services have to be hjson files
 			serviceFilePath = serviceFilePath:sub(1, -5) -- remove .json ext
 			serviceFilePath = serviceFilePath .. "hjson"
@@ -77,6 +95,49 @@ local function inject_ascend_services(protocol)
 		local ok = fs.safe_write_file(serviceFilePath, service)
 		if not ok then
 			log_error("failed to write service file " .. serviceFilePath)
+			os.exit(1)
+		end
+		::continue::
+	end
+
+	local service_templates_directory = path.combine(serviceDirectory, "template")
+	local baker_service_template = fs.read_file(path.combine(service_templates_directory, "baker.json"))
+	for bakerId, bakerOptions in pairs(bakers) do
+		local args = { "run", "with", "local", "node", "${HOME}/.tezos-node", bakerId, "--votefile", "${VOTE_FILE}" }
+        if table.is_array(bakerOptions.args) then
+			for _, arg in ipairs(bakerOptions.args) do
+				table.insert(args, arg)
+			end
+			util.merge_arrays(args, bakerOptions.args, { arrayMergeStrategy = "combine"})
+		end
+		if options.withDal then
+			table.insert(args, "--dal-node")
+			table.insert(args, "http://127.0.0.1:10732")
+		end
+
+		vars = util.merge_tables(vars, {
+			BAKER_ARGS =  string.interpolate(hjson.encode_to_json(args), vars),
+		}, { overwrite = true })
+		baker_service_template = baker_service_template:gsub("\"${BAKER_ARGS}\"", "${BAKER_ARGS}")
+		local service = string.interpolate(baker_service_template, vars)
+		local serviceFilePath = path.combine(servicesDirectory, bakerId .. ".hjson")
+		local ok = fs.safe_write_file(serviceFilePath, service)
+		if not ok then
+			log_error("failed to write service file " .. serviceFilePath)
+			os.exit(1)
+		end
+	end
+
+	local serviceExtraTemplatesDirectory = path.combine(serviceDirectory, "extra")
+	for _, extraServiceFileName in ipairs(extraServices) do
+		local serviceTemplatePath = path.combine(serviceExtraTemplatesDirectory, extraServiceFileName .. ".json")
+		local serviceFilePath = path.combine(servicesDirectory, extraServiceFileName .. ".hjson")
+
+		local serviceTemplate = fs.read_file(serviceTemplatePath)
+		local service = string.interpolate(serviceTemplate, vars)
+		local ok = fs.safe_write_file(serviceFilePath, service)
+		if not ok then
+			log_error("failed to copy extra service file " .. serviceTemplatePath .. " to " .. serviceFilePath)
 			os.exit(1)
 		end
 	end
@@ -112,6 +173,8 @@ end
 
 ---@class TezboxInitializeOptions
 ---@field injectServices boolean?
+---@field withDal boolean?
+---@field init string?
 
 ---@param protocol string
 ---@param options TezboxInitializeOptions
@@ -252,7 +315,17 @@ function core.initialize(protocol, options)
 
 	-- patch services
 	if options.injectServices then
-		inject_ascend_services(proto)
+		inject_ascend_services(proto, bakerAccounts, { withDal = options.withDal })
+	end
+
+	if options.withDal and not octez.dal.install_trusted_setup() then
+		log_error("failed to install dal trusted setup")
+		os.exit(1)
+	end
+
+	if type(options.init) == "string" and not os.execute(options.init) then
+		log_error("failed to run init script")
+		os.exit(1)
 	end
 
 	-- finalize
