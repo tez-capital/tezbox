@@ -31,21 +31,21 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.3 list-p
 
 ##### Qena
 ```bash
-# to run chain with the PsParisC protocol
+# to run chain with the Qena protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc3 qenabox
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc3 qenabox
 ```
 ##### Quebec A
 ```bash
-# to run chain with the PsParisC protocol
+# to run chain with the Quebec A protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1 quebecbox
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc1 quebecbox
 ```
 ##### Quebec B
 ```bash
-# to run chain with the PsParisC protocol
+# to run chain with the Quebec B protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2 quebecbbox
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc2 quebecbbox
