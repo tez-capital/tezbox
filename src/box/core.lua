@@ -103,6 +103,12 @@ local function inject_ascend_services(protocol, bakers, options)
 	local service_templates_directory = path.combine(serviceDirectory, "template")
 	local baker_service_template = fs.read_file(path.combine(service_templates_directory, "baker.json"))
 	for bakerId, bakerOptions in pairs(bakers) do
+		local serviceFilePath = path.combine(servicesDirectory, bakerId .. ".hjson")
+		if fs.exists(serviceFilePath) then
+			log_debug("service file " .. serviceFilePath .. " already exists, skipping")
+			goto continue
+		end
+
 		local args = { "run", "with", "local", "node", "${HOME}/.tezos-node", bakerId, "--votefile", "${VOTE_FILE}" }
         if table.is_array(bakerOptions.args) then
 			for _, arg in ipairs(bakerOptions.args) do
@@ -120,18 +126,23 @@ local function inject_ascend_services(protocol, bakers, options)
 		}, { overwrite = true })
 		baker_service_template = baker_service_template:gsub("\"${BAKER_ARGS}\"", "${BAKER_ARGS}")
 		local service = string.interpolate(baker_service_template, vars)
-		local serviceFilePath = path.combine(servicesDirectory, bakerId .. ".hjson")
+		
 		local ok = fs.safe_write_file(serviceFilePath, service)
 		if not ok then
 			log_error("failed to write service file " .. serviceFilePath)
 			os.exit(1)
 		end
+		::continue::
 	end
 
 	local serviceExtraTemplatesDirectory = path.combine(serviceDirectory, "extra")
 	for _, extraServiceFileName in ipairs(extraServices) do
 		local serviceTemplatePath = path.combine(serviceExtraTemplatesDirectory, extraServiceFileName .. ".json")
 		local serviceFilePath = path.combine(servicesDirectory, extraServiceFileName .. ".hjson")
+		if fs.exists(serviceFilePath) then
+			log_debug("service file " .. serviceFilePath .. " already exists, skipping")
+			goto continue
+		end
 
 		local serviceTemplate = fs.read_file(serviceTemplatePath)
 		local service = string.interpolate(serviceTemplate, vars)
@@ -140,6 +151,7 @@ local function inject_ascend_services(protocol, bakers, options)
 			log_error("failed to copy extra service file " .. serviceTemplatePath .. " to " .. serviceFilePath)
 			os.exit(1)
 		end
+		::continue::
 	end
 
 	-- healthchecks
