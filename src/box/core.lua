@@ -81,7 +81,7 @@ local function inject_ascend_services(protocol, bakers, options)
 
 	for _, serviceFileName in ipairs(serviceFiles) do
 		local servicePath = path.combine(serviceDirectory, serviceFileName)
-		if not servicePath:match("%.json$") then
+		if not servicePath:match("%.json$") and not servicePath:match("%.hjson$") then
 			goto continue
 		end
 
