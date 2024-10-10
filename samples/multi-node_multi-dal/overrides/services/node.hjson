@@ -1,0 +1,21 @@
+{
+    executable: octez-node
+    args: [
+        run
+        --rpc-addr=0.0.0.0:8732
+		--allow-all-rpc=0.0.0.0
+        --metadata-size-limit=unlimited
+		--synchronisation-threshold=0
+		--net-addr=127.0.0.1:9732
+        --peer=127.0.0.1:9733
+        --peer=127.0.0.1:9734
+    ]
+    environment: {
+        HOME: ${HOME}
+        TEZOS_LOG: "* -> info"
+    }
+    restart: always
+    restart_delay: 20
+    stop_timeout: 300
+    user: ${USER}
+}

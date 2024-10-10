@@ -53,7 +53,6 @@ end
 ---@class RunNodeOptions
 ---@field user string?
 
-
 ---runs octez node
 ---@param args string[]
 ---@param options RunNodeOptions

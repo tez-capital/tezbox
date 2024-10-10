@@ -6,8 +6,11 @@ background20<p align="center"><img width="150" src="https://raw.githubuserconten
 
 TezBox is a tezos sandbox that allows you to run a minimal local tezos chain with a single command. It is designed to be a simple and easy to use tool for developers who want to quickly test their smart contracts or dapps on a local tezos chain.
 
-⚠️⚠️⚠️ BREAKING 0.3.0 ⚠️⚠️⚠️
+⚠️⚠️⚠️ BREAKING ⚠️⚠️⚠️
+0.4.0
+- data directory moved from `/tezbox/data` to `/tezbox/context/data`
 
+0.3.0
 - output of services is not logged into console. See [Logs](#logs) section for more details.
 - each baker runs as separate process
 
@@ -131,14 +134,14 @@ docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... 
 
 #### Chain Context
 
-Chain and protocol is automatically initialized only once during the first run. The chain and all runtime data are stored in `/tezbox/data` directory. If you want to persist your sandbox state just run it with mounted volume to `/tezbox/data` directory.
+Chain and protocol is automatically initialized only once during the first run. The chain and all runtime data are stored in `/tezbox/context/data` directory. If you want to persist your sandbox state just run it with mounted volume to `/tezbox/context/data` directory.
 
 e.g.
 ```bash
 docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 oxfordbox
 ```
 
-NOTE: *To reset the state you can remove the `/tezbox/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
+NOTE: *To reset the state you can remove the `/tezbox/context/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
 
 #### Flextesa Compatibility
 

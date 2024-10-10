@@ -1,8 +1,8 @@
 local args = require "util.args"
 
 local tezboxDirectory = os.getenv("TEZBOX_DIRECTORY") or "/tezbox"
-local tezboxDataDirectory = path.combine(tezboxDirectory, "data")
 local tezboxContextDirectory = path.combine(tezboxDirectory, "context")
+local tezboxDataDirectory = path.combine(tezboxContextDirectory, "data")
 local defaultEnv = {
 	tezboxDirectory = tezboxDirectory,
 	configurationDirectory = path.combine(tezboxDirectory, "configuration"),
@@ -37,15 +37,5 @@ fs.mkdirp(env.configurationDirectory)
 fs.mkdirp(env.configurationOverridesDirectory)
 fs.mkdirp(env.contextDirectory)
 fs.mkdirp(env.homeDirectory)
-
-if env.user ~= "" and env.user ~= "root" then
-	local ok, uid = fs.safe_getuid(env.user)
-	if not ok then
-		log_error("user " .. env.user .. " does not exist")
-		os.exit(1)
-	end
-
-	fs.chown(env.tezboxDirectory, uid, uid, { recurse = true })
-end
 
 return env

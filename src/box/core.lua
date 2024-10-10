@@ -126,7 +126,7 @@ local function inject_ascend_services(protocol, bakers, options)
 		}, { overwrite = true })
 		baker_service_template = baker_service_template:gsub("\"${BAKER_ARGS}\"", "${BAKER_ARGS}")
 		local service = string.interpolate(baker_service_template, vars)
-		
+
 		local ok = fs.safe_write_file(serviceFilePath, service)
 		if not ok then
 			log_error("failed to write service file " .. serviceFilePath)
@@ -340,6 +340,12 @@ function core.initialize(protocol, options)
 		os.exit(1)
 	end
 
+	local init_script_path = path.combine(env.contextDirectory, "init")
+	if fs.exists(init_script_path) then
+		os.execute(init_script_path)
+	end
+
+	context.setup_file_ownership() -- fixup after external init scripts
 	-- finalize
 	fs.write_file(initializedProtocolFilePath, protocol)
 end

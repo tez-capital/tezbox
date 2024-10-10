@@ -1,0 +1,28 @@
+#!/bin/sh
+DATA_DIR=/tezbox/context/data
+
+NODE2_DATA_DIR=$DATA_DIR/node2
+octez-node identity generate 0.0 --data-dir=$NODE2_DATA_DIR
+octez-node config init --network=/tezbox/context/genesis.json \
+    --net-addr=0.0.0.0:9733 \
+    --rpc-addr=0.0.0.0:8733 \
+    --expected-pow=0.0 \
+    --connections=2 \
+    --history-mode=archive \
+    --data-dir=$NODE2_DATA_DIR
+
+# TODO: find a way to avoid copying the version.json file
+cp $DATA_DIR/.tezos-node/version.json $NODE2_DATA_DIR/version.json
+
+NODE3_DATA_DIR=$DATA_DIR/node3
+octez-node identity generate 0.0 --data-dir=$NODE3_DATA_DIR
+octez-node config init --network=/tezbox/context/genesis.json \
+    --net-addr=0.0.0.0:9733 \
+    --rpc-addr=0.0.0.0:8733 \
+    --expected-pow=0.0 \
+    --connections=2 \
+    --history-mode=archive \
+    --data-dir=$NODE3_DATA_DIR
+
+# TODO: find a way to avoid copying the version.json file
+cp $DATA_DIR/.tezos-node/version.json $NODE3_DATA_DIR/version.json

@@ -7,6 +7,18 @@ local context = {
 	protocols = {}
 }
 
+function context.setup_file_ownership()
+	if env.user ~= "" and env.user ~= "root" then
+		local ok, uid = fs.safe_getuid(env.user)
+		if not ok then
+			log_error("user " .. env.user .. " does not exist")
+			os.exit(1)
+		end
+
+		fs.chown(env.contextDirectory, uid, uid, { recurse = true })
+	end
+end
+
 function context.build()
 	-- build context
 	local configurationFiles = fs.read_dir(env.configurationDirectory, {
@@ -49,8 +61,13 @@ function context.build()
 			fs.write_file(contextFile, hjson.encode_to_json(configuration))
 		else
 			local contextFile = path.combine(env.contextDirectory, configurationFile)
+			local configurationOverridesFile = path.combine(env.configurationOverridesDirectory, configurationFile)
 			fs.mkdirp(path.dir(contextFile))
-			fs.copy_file(configurationFilePath, contextFile)
+			if fs.exists(configurationOverridesFile) then
+				fs.copy_file(configurationOverridesFile, contextFile)
+			else
+				fs.copy_file(configurationFilePath, contextFile)
+			end
 		end
 		::continue::
 	end
@@ -127,6 +144,8 @@ function context.build()
 		genesis_pubkey = constants.activatorAccount.pk
 	})
 	fs.write_file(path.combine(env.contextDirectory, "sandbox.json"), sandboxJson)
+
+	context.setup_file_ownership()
 end
 
 return context
