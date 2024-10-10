@@ -7,6 +7,7 @@ background20<p align="center"><img width="150" src="https://raw.githubuserconten
 TezBox is a tezos sandbox that allows you to run a minimal local tezos chain with a single command. It is designed to be a simple and easy to use tool for developers who want to quickly test their smart contracts or dapps on a local tezos chain.
 
 ⚠️⚠️⚠️ BREAKING ⚠️⚠️⚠️
+
 0.4.0
 - data directory moved from `/tezbox/data` to `/tezbox/context/data`
 
