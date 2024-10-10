@@ -56,13 +56,14 @@ function context.build()
 	end
 
 	for _, configurationOverrideFile in ipairs(configurationOverrideFiles) do
-		local ovverrideFilePath = path.combine(env.configurationOverridesDirectory, configurationOverrideFile)
+		local overrideFilePath = path.combine(env.configurationOverridesDirectory, configurationOverrideFile)
 		local newOverrideFilePath = path.combine(env.contextDirectory, configurationOverrideFile)
-		if fs.file_type(ovverrideFilePath) == "directory" then
-			fs.mkdirp(ovverrideFilePath)
+		if fs.file_type(overrideFilePath) == "directory" then
+			fs.mkdirp(overrideFilePath)
 			goto continue
 		end
 		if not fs.exists(newOverrideFilePath) then -- only if it wasnt applied through merge
+			fs.mkdirp(path.dir(newOverrideFilePath))
 			fs.copy_file(path.combine(env.configurationOverridesDirectory, configurationOverrideFile),
 				newOverrideFilePath)
 		end
