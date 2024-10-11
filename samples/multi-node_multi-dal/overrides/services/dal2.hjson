@@ -13,7 +13,7 @@
     "--endpoint",
     "http://127.0.0.1:8733",
     "--producer-profiles=0",
-    "--public-addr=0.0.0.0:10735",
+    "--rpc-addr=0.0.0.0:10735",
     "--net-addr=0.0.0.0:11735",
     "--data-dir=/tezbox/context/data/dal2"
   ]
