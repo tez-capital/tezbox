@@ -12,9 +12,10 @@
     "run",
     "--endpoint",
     "http://127.0.0.1:8733",
-    "--producer-profiles=0",
+    "--observer-profiles=0",
     "--rpc-addr=0.0.0.0:10735",
     "--net-addr=0.0.0.0:11735",
-    "--data-dir=/tezbox/context/data/dal2"
+    "--data-dir=/tezbox/context/data/dal2",
+    "--peers=127.0.0.1:11734,127.0.0.1:11736"
   ]
 }

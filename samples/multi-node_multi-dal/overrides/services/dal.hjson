@@ -15,6 +15,7 @@
     "--producer-profiles=0",
     "--rpc-addr=0.0.0.0:10734",
     "--net-addr=0.0.0.0:11734",
-    "--data-dir=/tezbox/context/data/dal1"
+    "--data-dir=/tezbox/context/data/dal1",
+    "--peers=127.0.0.1:11735,127.0.0.1:11736"
   ]
 }
