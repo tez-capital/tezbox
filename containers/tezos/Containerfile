@@ -14,6 +14,9 @@ ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
 ENV HOME=/tezbox/context/data
 
+# dal scripts need curl
+RUN apk add curl
+
 RUN printf '#!/bin/sh\n\
 if [ -z "$GITHUB_TOKEN" ]; then\n\
   wget "$@" \n\
