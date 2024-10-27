@@ -69,7 +69,7 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=PsParisC,PsQEna42
+          PROTOCOLS=PsParisC,PsQena42
           IMAGE_TAG=latest
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4
