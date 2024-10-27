@@ -41,7 +41,7 @@ ADD tools/cleanup-protocols.lua /tmp/cleanup-protocols.lua
 RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
 
 RUN ln -s /home/tezos/.zcash-params /usr/local/share/zcash-params
-RUN "http		80/tcp		www		# WorldWideWeb HTTP" > /etc/services
+RUN echo "http		80/tcp		www		# WorldWideWeb HTTP" > /etc/services
 
 ENTRYPOINT [ "ascend" ]
 CMD ["parisbox"]
