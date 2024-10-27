@@ -30,7 +30,7 @@ local env = util.merge_tables({
 	octezNodeBinary = args.options["octez-node-binary"] or env.get_env("OCTEZ_NODE_BINARY"),
 	octezClientBinary = args.options["octez-client-binary"] or env.get_env("OCTEZ_CLIENT_BINARY"),
 
-	user = args.options["user"] or env.get_env("USER"),
+	user = args.options["user"] or env.get_env("TEZBOX_USER"),
 }, defaultEnv)
 
 fs.mkdirp(env.configurationDirectory)
