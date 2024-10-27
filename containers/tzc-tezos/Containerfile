@@ -19,13 +19,13 @@ ENV HOME=/tezbox/context/data
 
 RUN printf '#!/bin/sh\n\
 if [ -z "$GITHUB_TOKEN" ]; then\n\
-  wget "$@" \n\
+  curl -L "$@" -o /tmp/downloaded_file \n\
 else\n\
-  wget --header "Authorization: token $GITHUB_TOKEN" "$@" \n\
-fi\n' > /usr/local/bin/auth_wget && chmod +x /usr/local/bin/auth_wget
+  curl -H "Authorization: token $GITHUB_TOKEN" -L "$@" -o /tmp/downloaded_file \n\
+fi\n' > /usr/local/bin/auth_curl && chmod +x /usr/local/bin/auth_curl
 
-# Use auth_wget for downloading files with optional authentication
-RUN auth_wget https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh -O /tmp/setup-ascend.sh && sh /tmp/setup-ascend.sh --prerelease
+# Use auth_curl for downloading files with optional authentication
+RUN auth_curl https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh && sh /tmp/downloaded_file --prerelease
 
 RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/context
 COPY configuration /tezbox/configuration
