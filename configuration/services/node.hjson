@@ -8,7 +8,7 @@
         --metadata-size-limit=unlimited
 		--synchronisation-threshold=0
 		--no-bootstrap-peers
-		--peer=localhost:9732
+		--peer=127.0.0.1:9732
 		--private-mode
     ]
     environment: {
