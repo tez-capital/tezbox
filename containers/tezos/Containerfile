@@ -1,6 +1,6 @@
 ARG IMAGE_TAG=octez-v20.3
 
-FROM ghcr.io/tez-capital/tezos:${IMAGE_TAG}
+FROM docker.io/tezos/tezos:${IMAGE_TAG}
 
 ARG PROTOCOLS=parisbox
 
