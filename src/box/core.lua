@@ -67,6 +67,7 @@ local function inject_ascend_services(protocol, bakers, options)
 		PROTOCOL_HASH = protocol.hash,
 		SANDBOX_FILE = path.combine(protocol.path, constants.sandboxParametersFileId),
 		HOME = env.homeDirectory,
+		BAKERS_HOME = env.bakersHomeDirectory,
 		VOTE_FILE = path.combine(protocol.path, constants.voteFileId),
 		USER = env.user,
 	}
@@ -328,6 +329,17 @@ function core.initialize(protocol, options)
 	-- patch services
 	if options.injectServices then
 		inject_ascend_services(proto, bakerAccounts, { withDal = options.withDal })
+	end
+
+	-- copy .tezos-client from homeDirectory to bakersHomeDirectory
+	local octezClientPath = path.combine(env.homeDirectory, ".tezos-client")
+	local octezClientTargetPath = path.combine(env.bakersHomeDirectory, ".tezos-client")
+	local ok, err = fs.safe_copy(octezClientPath, octezClientTargetPath, { overwrite = true, ignore = function (path)
+		return path:match("logs")
+	end })
+	if not ok then
+		log_error("failed to copy .tezos-client to " .. octezClientTargetPath .. " - error: " .. tostring(err))
+		os.exit(1)
 	end
 
 	if options.withDal and not octez.dal.install_trusted_setup() then
