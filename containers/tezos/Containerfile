@@ -12,7 +12,8 @@ ENV ASCEND_SOCKET=/var/run/ascend.socket
 ENV ASCEND_LOGS=/ascend/logs
 ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
-ENV HOME=/tezbox/context/data
+ENV TEZBOX_HOME=/tezbox/context/data
+ENV HOME=/home/tezos
 
 # dal scripts need curl
 RUN apk add curl

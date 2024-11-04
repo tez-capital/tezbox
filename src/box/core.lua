@@ -67,7 +67,6 @@ local function inject_ascend_services(protocol, bakers, options)
 		PROTOCOL_HASH = protocol.hash,
 		SANDBOX_FILE = path.combine(protocol.path, constants.sandboxParametersFileId),
 		HOME = env.homeDirectory,
-		BAKERS_HOME = env.bakersHomeDirectory,
 		VOTE_FILE = path.combine(protocol.path, constants.voteFileId),
 		USER = env.user,
 	}
@@ -331,9 +330,9 @@ function core.initialize(protocol, options)
 		inject_ascend_services(proto, bakerAccounts, { withDal = options.withDal })
 	end
 
-	-- copy .tezos-client from homeDirectory to bakersHomeDirectory
+	-- copy .tezos-client from homeDirectory to HOME
 	local octezClientPath = path.combine(env.homeDirectory, ".tezos-client")
-	local octezClientTargetPath = path.combine(env.bakersHomeDirectory, ".tezos-client")
+	local octezClientTargetPath = path.combine(os.getenv("HOME") or ".", ".tezos-client")
 	local ok, err = fs.safe_copy(octezClientPath, octezClientTargetPath, { overwrite = true, ignore = function (path)
 		return path:match("logs")
 	end })

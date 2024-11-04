@@ -2,7 +2,7 @@
     executable: octez-baker-${PROTOCOL_SHORT}
     args: ${BAKER_ARGS}
     environment: {
-        HOME: ${BAKERS_HOME}
+        HOME: ${HOME}
         TEZOS_LOG: "* -> info"
     }
     restart: always

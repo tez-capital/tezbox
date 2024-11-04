@@ -8,12 +8,14 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 
 ⚠️⚠️⚠️ BREAKING ⚠️⚠️⚠️
 
+0.5.0
+- The `HOME` directory is set to `/home/tezos`.
+  - Running `octez-client` and other applications in the container (excluding services) will use this `HOME` directory.
+- All services use `TEZBOX_HOME` as the `HOME` directory, with a default path of `/tezbox/context/data`.
+- Keys imported during bootstrap are accessible from both `HOME` directories.
+
 0.4.0
 - data directory moved from `/tezbox/data` to `/tezbox/context/data`
-
-0.3.0
-- output of services is not logged into console. See [Logs](#logs) section for more details.
-- each baker runs as separate process
 
 ### How to use TezBox?
 
