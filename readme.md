@@ -42,6 +42,16 @@ docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4 q
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4 qenabox
 ```
 
+#### CI
+
+`tezbox` is commonly used in CI pipelines. If you can estimate the expected duration of a specific test and want to prevent CI from getting stuck, you can use the `--timeout=<duration>` option to limit how long the instance runs. Supported units: `s` (seconds), `m` (minutes), `h` (hours).
+
+```bash
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v20.3 --timeout=120s parisbox
+```
+
+Note: The timeout specifies how long the sandbox runs, excluding the bootstrap duration.
+
 #### Logs
 
 Output from each service are stored in /ascend/logs within the container. To access the logs without entering the container, mount this directory from outside the container.
