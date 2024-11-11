@@ -37,9 +37,9 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.3 list-p
 
 ```bash
 # to run chain with the Qena42 protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4 qenabox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc5 q3nabox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4 qenabox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0-rc5 q3nabox
 ```
 
 #### CI

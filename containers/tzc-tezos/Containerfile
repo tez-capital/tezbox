@@ -12,20 +12,21 @@ ENV ASCEND_SOCKET=/var/run/ascend.socket
 ENV ASCEND_LOGS=/ascend/logs
 ENV ASCEND_INIT="tezbox init --setup-services"
 ENV TEZBOX_USER=tezos
-ENV HOME=/tezbox/context/data
+ENV TEZBOX_HOME=/tezbox/context/data
+ENV HOME=/home/tezos
 
 # dal scripts need curl
-# RUN apk add curl
+RUN apk add curl
 
 RUN printf '#!/bin/sh\n\
 if [ -z "$GITHUB_TOKEN" ]; then\n\
-  curl -L "$@" -o /tmp/downloaded_file \n\
+  wget "$@" \n\
 else\n\
-  curl -H "Authorization: token $GITHUB_TOKEN" -L "$@" -o /tmp/downloaded_file \n\
-fi\n' > /usr/local/bin/auth_curl && chmod +x /usr/local/bin/auth_curl
+  wget --header "Authorization: token $GITHUB_TOKEN" "$@" \n\
+fi\n' > /usr/local/bin/auth_wget && chmod +x /usr/local/bin/auth_wget
 
-# Use auth_curl for downloading files with optional authentication
-RUN auth_curl https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh && sh /tmp/downloaded_file --prerelease
+# Use auth_wget for downloading files with optional authentication
+RUN auth_wget https://raw.githubusercontent.com/alis-is/ascend/main/tools/setup/standalone-linux.sh -O /tmp/setup-ascend.sh && sh /tmp/setup-ascend.sh --prerelease
 
 RUN mkdir -p /tezbox /tezbox/configuration /tezbox/overrides /tezbox/overrides/context
 COPY configuration /tezbox/configuration
@@ -39,9 +40,6 @@ ENV PROTOCOLS=${PROTOCOLS}
 RUN echo $PROTOCOLS
 ADD tools/cleanup-protocols.lua /tmp/cleanup-protocols.lua
 RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
-
-RUN ln -s /home/tezos/.zcash-params /usr/local/share/zcash-params
-RUN echo "http		80/tcp		www		# WorldWideWeb HTTP" > /etc/services
 
 ENTRYPOINT [ "ascend" ]
 CMD ["parisbox"]

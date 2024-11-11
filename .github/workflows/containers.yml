@@ -62,17 +62,17 @@ jobs:
         push: true
         provenance: false
 
-    - name: build tezos v21.0-rc4
+    - name: build tezos v21.0-rc5
       uses: docker/build-push-action@v5
       with:
         file: containers/tzc-tezos/Containerfile
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=PsParisC,PsQena42
+          PROTOCOLS=PsParisC,PsQ3NAxQ
           IMAGE_TAG=latest
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc4
+        tags: ghcr.io/tez-capital/tezbox:tezos-v21.0-rc5.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.0-rc5
         push: true
         provenance: false
 
