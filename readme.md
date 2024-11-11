@@ -33,7 +33,7 @@ You can list available protocols with the following command:
 # docker run -it <image> list-protocols
 docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v20.3 list-protocols
 ```
-#### Qena42
+#### Q3NA
 
 ```bash
 # to run chain with the Qena42 protocol
