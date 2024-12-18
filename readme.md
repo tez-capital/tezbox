@@ -83,15 +83,15 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 ```
 and run the container with the following command:
 ```bash
-# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 oxfordbox
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/Proxford/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 oxfordbox
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 parisbox
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 parisbox
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
 Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
 
 ```bash
-docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v21.0 oxfordbox
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v21.0 parisbox
 ```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
@@ -127,7 +127,7 @@ autostart: false
 ```
 and mount it into overrides directory:
 ```bash
-docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 oxfordbox
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.0 parisbox
 ```
 
 #### Chain Context
@@ -136,14 +136,14 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0 oxfordbox
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.0 parisbox
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/context/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
 
 #### Flextesa Compatibility
 
-To maintain some level of compatibility with flextesa, the alice and bob accounts are the same. The RPC port is exposed on ports 8732 and 20000. And we use similar protocol aliases like oxfordbox and parisbox.
+To maintain some level of compatibility with flextesa, the alice and bob accounts are the same. The RPC port is exposed on ports 8732 and 20000. And we use similar protocol aliases like parisbox and quebecbox.
 
 But unlike flextesa the tezbox won't expose configuration through command line arguments. Instead, you can edit configuration directly in the configuration files or use overrides.
 
