@@ -1,6 +1,6 @@
 local protocols = os.getenv('PROTOCOLS')
-local tezboxDirectory = os.getenv("TEZBOX_DIRECTORY") or "/tezbox"
-local tezboxContextDirectory = path.combine(tezboxDirectory, "configuration")
+local tezbox_directory = os.getenv("TEZBOX_DIRECTORY") or "/tezbox"
+local tezbox_context_directory = path.combine(tezbox_directory, "configuration")
 
 if type (protocols) ~= "string" then
 	return
@@ -13,28 +13,28 @@ end
 -- split by coma
 local protocols = string.split(protocols, ",")
 
-local protocolsDirectory = path.combine(tezboxContextDirectory, "protocols")
+local protocol_directory = path.combine(tezbox_context_directory, "protocols")
 
-local protocolDirectories = fs.read_dir(protocolsDirectory, {
+local protocol_directories = fs.read_dir(protocol_directory, {
 	recurse = false,
-	returnFullPaths = false,
-	asDirEntries = false,
+	return_full_paths = false,
+	as_dir_entries = false,
 }) --[=[@as string[]]=]
 
 -- remove all directories not in protocols
-for _, protocolDirectory in ipairs(protocolDirectories) do
-	if not table.includes(protocols, protocolDirectory) then
-		fs.remove(path.combine(protocolsDirectory, protocolDirectory), { recurse = true, contentOnly = false })
+for _, protocol_directory in ipairs(protocol_directories) do
+	if not table.includes(protocols, protocol_directory) then
+		fs.remove(path.combine(protocol_directory, protocol_directory), { recurse = true, content_only = false })
 	end
 end
 
 -- print kept protocols
-local protocolDirectories = fs.read_dir(protocolsDirectory, {
+local protocol_directories = fs.read_dir(protocol_directory, {
 	recurse = false,
-	returnFullPaths = false,
-	asDirEntries = false,
+	return_full_paths = false,
+	as_dir_entries = false,
 }) --[=[@as string[]]=]
 
-for _, protocolDirectory in ipairs(protocolDirectories) do
-	print(protocolDirectory)
+for _, protocol_directory in ipairs(protocol_directories) do
+	print(protocol_directory)
 end

@@ -1,6 +1,6 @@
 local args = cli.parse_args(arg)
 
-local optionAliases = {
+local option_aliases = {
 	["l"] = "log-level",
 	["t"] = "timeout"
 }
@@ -17,8 +17,8 @@ for _, v in ipairs(args) do
 			table.insert(parameters, v.value)
 		end
 	elseif v.type == "option" then
-		if optionAliases[v.id] then
-			v.id = optionAliases[v.id]
+		if option_aliases[v.id] then
+			v.id = option_aliases[v.id]
 		end
 		options[v.id] = v.value
 	end

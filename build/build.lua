@@ -12,18 +12,18 @@ local function collect_requires(entrypoint)
 			local file = require:gsub("%.", "/") .. ".lua"
 			if fs.file_type(file) == "file" then
 				table.insert(requires, require)
-				local subRequires = collect_requires(file)
-				requires = util.merge_arrays(requires, subRequires) --[[ @as table ]]
+				local sub_requires = collect_requires(file)
+				requires = util.merge_arrays(requires, sub_requires) --[[ @as table ]]
 			end
 		end
 	end
 	return requires
 end
 
-local function inject_license(filePath)
-	local _content = fs.read_file(filePath)
-	local _, _shebangEnd = _content:find("#!/[^\n]*")
-	local _license = [[
+local function inject_license(file_path)
+	local content = fs.read_file(file_path)
+	local _, shebang_end = content:find("#!/[^\n]*")
+	local license = [[
 -- Copyright (C) 2024 tez.capital
 
 -- This program is free software: you can redistribute it and/or modify
@@ -39,15 +39,15 @@ local function inject_license(filePath)
 -- You should have received a copy of the GNU Affero General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	]]
-	local _contentWithLicense = _content:sub(1, _shebangEnd + 1) .. _license .. _content:sub(_shebangEnd + 1)
-	fs.write_file(filePath, _contentWithLicense)
+	local content_with_license = content:sub(1, shebang_end + 1) .. license .. content:sub(shebang_end + 1)
+	fs.write_file(file_path, content_with_license)
 end
 
 os.chdir("src")
 
 fs.mkdir("../bin")
 
-local tezboxEntrypoint = "tezbox.lua"
-local tezboxOutput = "../bin/tezbox"
-amalg("-o", tezboxOutput, "-s", tezboxEntrypoint, table.unpack(collect_requires(tezboxEntrypoint)))
-inject_license(tezboxOutput)
+local tezbox_entrypoint = "tezbox.lua"
+local tezbox_output = "../bin/tezbox"
+amalg("-o", tezbox_output, "-s", tezbox_entrypoint, table.unpack(collect_requires(tezbox_entrypoint)))
+inject_license(tezbox_output)

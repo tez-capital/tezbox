@@ -21,11 +21,11 @@ if args.command == "init" or args.command == "initialize" then
 	local protocol = args.parameters[1]
 	local options = {}
 	if args.options["setup-services"] then
-		options.injectServices = true
+		options.inject_services = true
 	end
 
 	if args.options["with-dal"] then
-		options.withDal = true
+		options.with_dal = true
 	end
 
 	if type(args.options["with-init"]) == "string" then

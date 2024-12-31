@@ -14,8 +14,19 @@ local core = {}
 ---@field aliases string[]?
 ---@field path string
 
+---@class BakerAccountProperties
+---@field pkh string
+---@field pk string
+---@field sk string
+---@field balance number
+---@field deposits table<string, number>?
+
+---@alias Accounts table<string, { pkh?: string, pk: string?, sk: string?, balance?: number }>
+
+---@param accounts Accounts
+---@param bakers table<string, BakerAccountProperties>
 local function split_account_balances(accounts, bakers)
-	local bakerAccounts = table.values(bakers)
+	local baker_accounts = table.values(bakers)
 
 	local index = 1
 
@@ -26,14 +37,14 @@ local function split_account_balances(accounts, bakers)
 		if not account.pkh then
 			goto continue
 		end
-		local baker = bakerAccounts[index]
+		local baker = baker_accounts[index]
 		if type(baker.deposits) ~= "table" then
 			baker.deposits = {}
 		end
 		baker.deposits[account.pkh] = account.balance
 
 		index = index + 1
-		if index > #bakerAccounts then
+		if index > #baker_accounts then
 			index = 1
 		end
 		::continue::
@@ -41,82 +52,82 @@ local function split_account_balances(accounts, bakers)
 end
 
 ---@class injectServicesOptions
----@field withDal boolean?
+---@field with_dal boolean?
 
 ---@param protocol ProtocolDefinition
 ---@param bakers table<string, table>
 ---@param options injectServicesOptions?
 local function inject_ascend_services(protocol, bakers, options)
 	if type(options) ~= "table" then options = {} end
-	local extraServices = {}
-	if options.withDal then
+	local extra_services = {}
+	if options.with_dal then
 		for _, service in ipairs(constants.dal.services) do
-			table.insert(extraServices, service)
+			table.insert(extra_services, service)
 		end
 	end
 
-	local servicesDirectory = os.getenv "ASCEND_SERVICES"
-	if not servicesDirectory then
+	local services_directory = os.getenv "ASCEND_SERVICES"
+	if not services_directory then
 		log_error("ASCEND_SERVICES environment variable not set")
 		os.exit(1)
 	end
 
 	local vars = require "eli.env".environment()
-	local contextVars = {
+	local context_vars = {
 		PROTOCOL_SHORT = protocol.short,
 		PROTOCOL_HASH = protocol.hash,
-		SANDBOX_FILE = path.combine(protocol.path, constants.sandboxParametersFileId),
-		HOME = env.homeDirectory,
-		VOTE_FILE = path.combine(protocol.path, constants.voteFileId),
+		SANDBOX_FILE = path.combine(protocol.path, constants.sandbox_parameters_file_id),
+		HOME = env.home_directory,
+		VOTE_FILE = path.combine(protocol.path, constants.vote_file_id),
 		USER = env.user,
 	}
-	vars = util.merge_tables(vars, contextVars, { overwrite = true })
+	vars = util.merge_tables(vars, context_vars, { overwrite = true })
 
-	local serviceDirectory = path.combine(env.contextDirectory, "services")
-	local serviceFiles = fs.read_dir(serviceDirectory, {
+	local service_directory = path.combine(env.context_directory, "services")
+	local service_files = fs.read_dir(service_directory, {
 		recurse = false,
-		returnFullPaths = false,
-		asDirEntries = false,
+		return_full_paths = false,
+		as_dir_entries = false,
 	}) --[=[@as string[]]=]
 
-	for _, serviceFileName in ipairs(serviceFiles) do
-		local servicePath = path.combine(serviceDirectory, serviceFileName)
-		if not servicePath:match("%.json$") and not servicePath:match("%.hjson$") then
+	for _, service_file_name in ipairs(service_files) do
+		local service_path = path.combine(service_directory, service_file_name)
+		if not service_path:match("%.json$") and not service_path:match("%.hjson$") then
 			goto continue
 		end
 
-		local serviceTemplate = fs.read_file(servicePath)
-		local service = string.interpolate(serviceTemplate, vars)
-		local serviceFilePath = path.combine(servicesDirectory, serviceFileName)
-		if serviceFilePath:match("%.json$") then -- services have to be hjson files
-			serviceFilePath = serviceFilePath:sub(1, -5) -- remove .json ext
-			serviceFilePath = serviceFilePath .. "hjson"
+		local service_template = fs.read_file(service_path)
+		local service = string.interpolate(service_template, vars)
+		local service_file_path = path.combine(services_directory, service_file_name)
+		if service_file_path:match("%.json$") then -- services have to be hjson files
+			service_file_path = service_file_path:sub(1, -5) -- remove .json ext
+			service_file_path = service_file_path .. "hjson"
 		end
-		local ok = fs.safe_write_file(serviceFilePath, service)
+		local ok = fs.safe_write_file(service_file_path, service)
 		if not ok then
-			log_error("failed to write service file " .. serviceFilePath)
+			log_error("failed to write service file " .. service_file_path)
 			os.exit(1)
 		end
 		::continue::
 	end
 
-	local service_templates_directory = path.combine(serviceDirectory, "template")
+	local service_templates_directory = path.combine(service_directory, "template")
 	local baker_service_template = fs.read_file(path.combine(service_templates_directory, "baker.json"))
-	for bakerId, bakerOptions in pairs(bakers) do
-		local serviceFilePath = path.combine(servicesDirectory, bakerId .. ".hjson")
-		if fs.exists(serviceFilePath) then
-			log_debug("service file " .. serviceFilePath .. " already exists, skipping")
+	for baker_id, baker_options in pairs(bakers) do
+		local service_file_path = path.combine(services_directory, baker_id .. ".hjson")
+		if fs.exists(service_file_path) then
+			log_debug("service file " .. service_file_path .. " already exists, skipping")
 			goto continue
 		end
 
-		local args = { "run", "with", "local", "node", "${HOME}/.tezos-node", bakerId, "--votefile", "${VOTE_FILE}" }
-        if table.is_array(bakerOptions.args) then
-			for _, arg in ipairs(bakerOptions.args) do
+		local args = { "run", "with", "local", "node", "${HOME}/.tezos-node", baker_id, "--votefile", "${VOTE_FILE}" }
+        if table.is_array(baker_options.args) then
+			for _, arg in ipairs(baker_options.args) do
 				table.insert(args, arg)
 			end
-			util.merge_arrays(args, bakerOptions.args, { arrayMergeStrategy = "combine"})
+			util.merge_arrays(args, baker_options.args, { merge_strategy = "combine"})
 		end
-		if options.withDal then
+		if options.with_dal then
 			table.insert(args, "--dal-node")
 			table.insert(args, "http://127.0.0.1:10732")
 		end
@@ -127,65 +138,65 @@ local function inject_ascend_services(protocol, bakers, options)
 		baker_service_template = baker_service_template:gsub("\"${BAKER_ARGS}\"", "${BAKER_ARGS}")
 		local service = string.interpolate(baker_service_template, vars)
 
-		local ok = fs.safe_write_file(serviceFilePath, service)
+		local ok = fs.safe_write_file(service_file_path, service)
 		if not ok then
-			log_error("failed to write service file " .. serviceFilePath)
+			log_error("failed to write service file " .. service_file_path)
 			os.exit(1)
 		end
 		::continue::
 	end
 
-	local serviceExtraTemplatesDirectory = path.combine(serviceDirectory, "extra")
-	for _, extraServiceFileName in ipairs(extraServices) do
-		local serviceTemplatePath = path.combine(serviceExtraTemplatesDirectory, extraServiceFileName .. ".json")
-		local serviceFilePath = path.combine(servicesDirectory, extraServiceFileName .. ".hjson")
-		if fs.exists(serviceFilePath) then
-			log_debug("service file " .. serviceFilePath .. " already exists, skipping")
+	local service_extra_templates_directory = path.combine(service_directory, "extra")
+	for _, extra_service_file_name in ipairs(extra_services) do
+		local service_template_path = path.combine(service_extra_templates_directory, extra_service_file_name .. ".json")
+		local service_file_path = path.combine(services_directory, extra_service_file_name .. ".hjson")
+		if fs.exists(service_file_path) then
+			log_debug("service file " .. service_file_path .. " already exists, skipping")
 			goto continue
 		end
 
-		local serviceTemplate = fs.read_file(serviceTemplatePath)
-		local service = string.interpolate(serviceTemplate, vars)
-		local ok = fs.safe_write_file(serviceFilePath, service)
+		local service_template = fs.read_file(service_template_path)
+		local service = string.interpolate(service_template, vars)
+		local ok = fs.safe_write_file(service_file_path, service)
 		if not ok then
-			log_error("failed to copy extra service file " .. serviceTemplatePath .. " to " .. serviceFilePath)
+			log_error("failed to copy extra service file " .. service_template_path .. " to " .. service_file_path)
 			os.exit(1)
 		end
 		::continue::
 	end
 
 	-- healthchecks
-	local ascendHealthchecksDirectory = os.getenv "ASCEND_HEALTHCHECKS"
-	if not ascendHealthchecksDirectory then
+	local ascend_healthchecks_directory = os.getenv "ASCEND_HEALTHCHECKS"
+	if not ascend_healthchecks_directory then
 		log_error("ASCEND_SERVICES environment variable not set")
 		os.exit(1)
 	end
-	local healthchecksDirectory = path.combine(env.contextDirectory, "healthchecks")
-	local healthcheckFiles = fs.read_dir(healthchecksDirectory, {
+	local healthchecks_directory = path.combine(env.context_directory, "healthchecks")
+	local healthcheck_files = fs.read_dir(healthchecks_directory, {
 		recurse = true,
-		returnFullPaths = false,
-		asDirEntries = false,
+		return_full_paths = false,
+		as_dir_entries = false,
 	}) --[=[@as string[]]=]
 
-	for _, healthcheckFileName in ipairs(healthcheckFiles) do
-		local sourcePath = path.combine(healthchecksDirectory, healthcheckFileName)
-		local targetPath = path.combine(ascendHealthchecksDirectory, healthcheckFileName)
-		local ok = fs.safe_copy(sourcePath, targetPath)
+	for _, healthcheck_file_name in ipairs(healthcheck_files) do
+		local source_path = path.combine(healthchecks_directory, healthcheck_file_name)
+		local target_path = path.combine(ascend_healthchecks_directory, healthcheck_file_name)
+		local ok = fs.safe_copy(source_path, target_path)
 		if not ok then
-			log_error("failed to copy healthcheck file " .. sourcePath .. " to " .. targetPath)
+			log_error("failed to copy healthcheck file " .. source_path .. " to " .. target_path)
 			os.exit(1)
 		end
-		local ok = fs.chmod(targetPath, "rwxr--r--")
+		local ok = fs.chmod(target_path, "rwxr--r--")
 		if not ok then
-			log_error("failed to chmod healthcheck file " .. targetPath)
+			log_error("failed to chmod healthcheck file " .. target_path)
 			os.exit(1)
 		end
 	end
 end
 
 ---@class TezboxInitializeOptions
----@field injectServices boolean?
----@field withDal boolean?
+---@field inject_services boolean?
+---@field with_dal boolean?
 ---@field init string?
 
 ---@param protocol string
@@ -194,13 +205,13 @@ function core.initialize(protocol, options)
 	if type(options) ~= "table" then options = {} end
 	protocol = string.lower(protocol)
 
-	local initializedProtocolFilePath = path.combine(env.homeDirectory, "tezbox-initialized")
+	local initialized_protocol_file_path = path.combine(env.home_directory, "tezbox-initialized")
 
-	local ok, initializedProtocol = fs.safe_read_file(initializedProtocolFilePath)
+	local ok, initialized_protocol = fs.safe_read_file(initialized_protocol_file_path)
 
 	if ok then
-		if initializedProtocol == protocol then
-			log_info("tezbox already initialized for protocol " .. initializedProtocol)
+		if initialized_protocol == protocol then
+			log_info("tezbox already initialized for protocol " .. initialized_protocol)
 			return
 		end
 		log_info("found tezbox-initialized file, but protocol is different, reinitializing")
@@ -210,7 +221,7 @@ function core.initialize(protocol, options)
 	octez.reset() -- reset octez state
 	context.build() -- rebuild context
 
-	local proto = context.protocolMapping[protocol] --[[@as ProtocolDefinition?]]
+	local proto = context.protocol_mapping[protocol] --[[@as ProtocolDefinition?]]
 	if not proto then
 		log_error("protocol " .. protocol .. " not found in context")
 		os.exit(1)
@@ -218,56 +229,56 @@ function core.initialize(protocol, options)
 
 	log_info("generating node identity")
 	local result = octez.node.generate_identity()
-	if result.exitcode ~= 0 then
+	if result.exit_code ~= 0 then
 		log_error("failed to generate node identity")
 		os.exit(1)
 	end
 
 	log_info("initializing node configuration")
-	local initConfigArgsHjson = fs.read_file(path.combine(env.contextDirectory, 'init-config-args.json'))
-	local initConfigArgs = hjson.parse(initConfigArgsHjson)
-	local result = octez.node.init_config(initConfigArgs)
-	if result.exitcode ~= 0 then
+	local init_config_args_raw = fs.read_file(path.combine(env.context_directory, 'init-config-args.json'))
+	local init_config_args = hjson.parse(init_config_args_raw)
+	local result = octez.node.init_config(init_config_args)
+	if result.exit_code ~= 0 then
 		log_error("failed to initialize node configuration")
 		os.exit(1)
 	end
 
 	log_info("importing accounts")
-	local accountsHjson = fs.read_file(path.combine(env.contextDirectory, 'accounts.json'))
-	local accounts = hjson.decode(accountsHjson)
+	local accounts_raw = fs.read_file(path.combine(env.context_directory, 'accounts.json'))
+	local accounts = hjson.decode(accounts_raw)
 
-	local bakersHjson = fs.read_file(path.combine(env.contextDirectory, 'bakers.json'))
-	local bakerAccounts = hjson.decode(bakersHjson)
+	local bakers_raw = fs.read_file(path.combine(env.context_directory, 'bakers.json'))
+	local baker_accounts = hjson.decode(bakers_raw)
 
-	accounts.activator = constants.activatorAccount
+	accounts.activator = constants.activator_account
 
-	for accountId, account in pairs(util.merge_tables(accounts, bakerAccounts)) do
+	for account_id, account in pairs(util.merge_tables(accounts, baker_accounts)) do
 		if not account.sk then
-			log_debug("skipped importing account " .. accountId .. " (no secret key)")
+			log_debug("skipped importing account " .. account_id .. " (no secret key)")
 			goto continue
 		end
-		log_debug("importing account " .. accountId)
-		local result = octez.client.import_account(accountId, account.sk)
-		if result.exitcode ~= 0 then
-			log_error("failed to import account " .. accountId)
+		log_debug("importing account " .. account_id)
+		local result = octez.client.import_account(account_id, account.sk)
+		if result.exit_code ~= 0 then
+			log_error("failed to import account " .. account_id)
 			os.exit(1)
 		end
 		::continue::
 	end
 
-	local sandboxParametersFile = path.combine(proto.path, constants.sandboxParametersFileId)
+	local sandbox_parameters_file = path.combine(proto.path, constants.sandbox_parameters_file_id)
 
 	-- split account balances
-	split_account_balances(accounts, bakerAccounts)
+	split_account_balances(accounts, baker_accounts)
 
 	-- inject accounts to sandbox parameters
-	local parametersHjson = fs.read_file(sandboxParametersFile)
-	local parameters = hjson.decode(parametersHjson)
+	local parameters_raw = fs.read_file(sandbox_parameters_file)
+	local parameters = hjson.decode(parameters_raw)
 
 	parameters.bootstrap_accounts = {}
-	for accountId, account in pairs(bakerAccounts) do
+	for account_id, account in pairs(baker_accounts) do
 		if (type(account.balance) ~= "number" and type(account.balance) ~= "string") or type(account.pk) ~= "string" then
-			error("invalid baker balance or pk for account " .. tostring(accountId))
+			error("invalid baker balance or pk for account " .. tostring(account_id))
 		end
 		local balance = account.balance
 		local extra = table.reduce(table.values(account.deposits or {}), function(acc, v)
@@ -281,24 +292,24 @@ function core.initialize(protocol, options)
 		})
 	end
 
-	fs.write_file(sandboxParametersFile, hjson.encode_to_json(parameters))
+	fs.write_file(sandbox_parameters_file, hjson.encode_to_json(parameters))
 
 	log_info("activating protocol " .. proto.hash)
 	octez.exec_with_node_running(function()
 		local result = octez.client.run({ "-block", "genesis", "activate", "protocol", proto.hash, "with", "fitness", "1",
 			"and",
-			"key", "activator", "and", "parameters", sandboxParametersFile })
-		if result.exitcode ~= 0 then
+			"key", "activator", "and", "parameters", sandbox_parameters_file })
+		if result.exit_code ~= 0 then
 			error("failed to activate protocol " .. proto.hash)
 		end
 
 		-- run baker and inject transfers
 		local proc = octez.baker.run(proto.short, {
-			"run", "remotely", "--votefile", path.combine(proto.path, constants.voteFileId)
+			"run", "remotely", "--votefile", path.combine(proto.path, constants.vote_file_id)
 		})
 
 		os.sleep(2)
-		for bakerId, baker in pairs(bakerAccounts) do
+		for baker_id, baker in pairs(baker_accounts) do
 			if not baker.deposits then
 				goto continue
 			end
@@ -309,39 +320,39 @@ function core.initialize(protocol, options)
 					amount = tostring(balance)
 				})
 			end
-			local result = octez.client.transfer(bakerId, transfers)
-			if result.exitcode ~= 0 then
-				error("failed to send deposit from baker " .. bakerId)
+			local result = octez.client.transfer(baker_id, transfers)
+			if result.exit_code ~= 0 then
+				error("failed to send deposit from baker " .. baker_id)
 			end
 			::continue::
 		end
 		proc:kill()
 		proc:wait(30)
-		if proc:get_exitcode() < 0 then
+		if proc:get_exit_code() < 0 then
 			proc:kill(require "os.signal".SIGKILL)
 		end
-		if result.exitcode ~= 0 then
+		if result.exit_code ~= 0 then
 			error("failed to top up accounts")
 		end
 	end)
 
 	-- patch services
-	if options.injectServices then
-		inject_ascend_services(proto, bakerAccounts, { withDal = options.withDal })
+	if options.inject_services then
+		inject_ascend_services(proto, baker_accounts, { with_dal = options.with_dal })
 	end
 
 	-- copy .tezos-client from homeDirectory to HOME
-	local octezClientPath = path.combine(env.homeDirectory, ".tezos-client")
-	local octezClientTargetPath = path.combine(os.getenv("HOME") or ".", ".tezos-client")
-	local ok, err = fs.safe_copy(octezClientPath, octezClientTargetPath, { overwrite = true, ignore = function (path)
+	local octez_client_path = path.combine(env.home_directory, ".tezos-client")
+	local octez_client_target_path = path.combine(os.getenv("HOME") or ".", ".tezos-client")
+	local ok, err = fs.safe_copy(octez_client_path, octez_client_target_path, { overwrite = true, ignore = function (path)
 		return path:match("logs")
 	end })
 	if not ok then
-		log_error("failed to copy .tezos-client to " .. octezClientTargetPath .. " - error: " .. tostring(err))
+		log_error("failed to copy .tezos-client to " .. octez_client_target_path .. " - error: " .. tostring(err))
 		os.exit(1)
 	end
 
-	if options.withDal and not octez.dal.install_trusted_setup() then
+	if options.with_dal and not octez.dal.install_trusted_setup() then
 		log_error("failed to install dal trusted setup")
 		os.exit(1)
 	end
@@ -351,23 +362,23 @@ function core.initialize(protocol, options)
 		os.exit(1)
 	end
 
-	local init_script_path = path.combine(env.contextDirectory, "init")
+	local init_script_path = path.combine(env.context_directory, "init")
 	if fs.exists(init_script_path) then
 		os.execute(init_script_path)
 	end
 
 	context.setup_file_ownership() -- fixup after external init scripts
 	-- finalize
-	fs.write_file(initializedProtocolFilePath, protocol)
+	fs.write_file(initialized_protocol_file_path, protocol)
 end
 
 function core.list_protocols()
 	context.build() -- rebuild context
 
 	local protocols = context.protocols
-	for protocol, protocolDetail in pairs(protocols) do
-		local aliases = util.merge_arrays({ protocolDetail.id, protocolDetail.short, protocolDetail.hash },
-			protocolDetail.aliases or {})
+	for protocol, protocol_detail in pairs(protocols) do
+		local aliases = util.merge_arrays({ protocol_detail.id, protocol_detail.short, protocol_detail.hash },
+			protocol_detail.aliases or {})
 		print(protocol .. " (available as: " .. string.join(", ", aliases) .. ")")
 	end
 end
