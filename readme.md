@@ -17,6 +17,14 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 0.4.0
 - data directory moved from `/tezbox/data` to `/tezbox/context/data`
 
+### Trusted By
+
+<div align="center">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center;">
+        <img src="https://user-images.githubusercontent.com/1114943/150659418-e55f1df3-ba4d-4e05-ab26-1f729858c7fb.png" />
+    </div>
+</div>
+
 ### How to use TezBox?
 
 To use TezBox, you need to have OCI compatible container runtime installed on your machine (e.g. docker, podman...). You can run TezBox with the following command:
