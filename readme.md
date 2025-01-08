@@ -21,7 +21,7 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 
 <div align="center">
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center;">
-        <img src="https://user-images.githubusercontent.com/1114943/150659418-e55f1df3-ba4d-4e05-ab26-1f729858c7fb.png" />
+        <img width="100" src="https://user-images.githubusercontent.com/1114943/150659418-e55f1df3-ba4d-4e05-ab26-1f729858c7fb.png" />
     </div>
 </div>
 
