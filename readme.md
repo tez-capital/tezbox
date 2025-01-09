@@ -19,13 +19,9 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 
 ### Trusted By
 
-<div align="center">
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center;">
-        <a href="https://taqueria.io/" target="_blank">
-            <img width="150" src="https://user-images.githubusercontent.com/1114943/150659418-e55f1df3-ba4d-4e05-ab26-1f729858c7fb.png" />
-        </a>
-    </div>
-</div>
+|         |         |
+|:-------:|:-------:|
+|<a href="https://taqueria.io/" target="_blank"><img width="150" src="https://user-images.githubusercontent.com/1114943/150659418-e55f1df3-ba4d-4e05-ab26-1f729858c7fb.png" /></a>|<a href="https://umamiwallet.com/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/trilitech/umami-v2/558eb098130b23ca04b4f359e7973b78f8e2f8f4/apps/web/src/assets/icons/logo-light.svg" /></a>|
 
 ### How to use TezBox?
 
