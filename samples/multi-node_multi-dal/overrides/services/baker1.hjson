@@ -2,7 +2,7 @@
   "restart_max_retries": 0,
   "user": "${USER}",
   "stop_timeout": 300,
-  "executable": "octez-baker-PsParisC",
+  "executable": "octez-baker-PsQuebec",
   "restart_delay": 20,
   "environment": {
     "HOME": "${HOME}",
@@ -17,7 +17,7 @@
     "${HOME}/.tezos-node",
     "baker1",
     "--votefile",
-    "/tezbox/context/protocols/PsParisC/vote-file.json",
+    "/tezbox/context/protocols/PsQuebec/vote-file.json",
     "--dal-node",
     "http://127.0.0.1:10734"
   ]

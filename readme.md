@@ -28,24 +28,16 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 To use TezBox, you need to have OCI compatible container runtime installed on your machine (e.g. docker, podman...). You can run TezBox with the following command:
 
 ```bash
-# to run chain with the PsParisC protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+# to run chain with the PsQuebec protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 ```
 
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v21.1 list-protocols
-```
-#### Quebec
-
-```bash
-# to run chain with the Qena42 protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 quebecbox
-# or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 quebecbox
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v21.3 list-protocols
 ```
 
 #### CI
@@ -53,7 +45,7 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 quebec
 `tezbox` is commonly used in CI pipelines. If you can estimate the expected duration of a specific test and want to prevent CI from getting stuck, you can use the `--timeout=<duration>` option to limit how long the instance runs. Supported units: `s` (seconds), `m` (minutes), `h` (hours). In case of a timeout, the container exits with an exit code of `2`.
 
 ```bash
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 --timeout=120s parisbox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 --timeout=120s quebecbox
 ```
 
 Note: The timeout specifies how long the sandbox runs, excluding the bootstrap duration.
@@ -67,10 +59,10 @@ Output from each service are stored in /ascend/logs within the container. To acc
 To run a dal within tezbox start tezbox with `--with-dal` option as follows:
 
 ```bash
-# to run chain with the PsParisC protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox --with-dal
+# to run chain with the PsQuebec protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox --with-dal
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox --with-dal
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox --with-dal
 ```
 
 ### Configuration
@@ -89,15 +81,15 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 ```
 and run the container with the following command:
 ```bash
-# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsQuebec/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
 Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
 
 ```bash
-docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 ```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
@@ -133,7 +125,7 @@ autostart: false
 ```
 and mount it into overrides directory:
 ```bash
-docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 ```
 
 #### Chain Context
@@ -142,14 +134,14 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.1 parisbox
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.3 quebecbox
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/context/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
 
 #### Flextesa Compatibility
 
-To maintain some level of compatibility with flextesa, the alice and bob accounts are the same. The RPC port is exposed on ports 8732 and 20000. And we use similar protocol aliases like parisbox and quebecbox.
+To maintain some level of compatibility with flextesa, the alice and bob accounts are the same. The RPC port is exposed on ports 8732 and 20000. And we use similar protocol aliases like quebecbox.
 
 But unlike flextesa the tezbox won't expose configuration through command line arguments. Instead, you can edit configuration directly in the configuration files or use overrides.
 
@@ -163,7 +155,7 @@ To build TezBox follow these steps:
 3. build lua sources (you can get eli [here](https://github.com/alis-is/eli/releases))
    - `eli build/build.lua`
 4. build the image
-   - `docker build --build-arg="PROTOCOLS=PsParisC" --build-arg="IMAGE_TAG=octez-v21.1" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
+   - `docker build --build-arg="PROTOCOLS=PsPaPsQuebecrisC" --build-arg="IMAGE_TAG=octez-v21.3" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
 
 ### Future development
 
