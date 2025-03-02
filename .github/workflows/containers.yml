@@ -48,7 +48,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: build tezos v21.3
+    - name: build tezos v21.4
       uses: docker/build-push-action@v5
       with:
         file: containers/tezos/Containerfile
@@ -56,13 +56,13 @@ jobs:
         platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=PsQuebec
-          IMAGE_TAG=octez-v21.3
+          IMAGE_TAG=octez-v21.4
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v21.3.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.3,ghcr.io/tez-capital/tezbox:latest
+        tags: ghcr.io/tez-capital/tezbox:tezos-v21.4.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.4,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
 
-    # - name: build tezos v21.3-rc5
+    # - name: build tezos v21.4-rc5
     #   uses: docker/build-push-action@v5
     #   with:
     #     file: containers/tzc-tezos/Containerfile
@@ -72,7 +72,7 @@ jobs:
     #       PROTOCOLS=PsQuebec
     #       IMAGE_TAG=latest
     #       GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-    #     tags: ghcr.io/tez-capital/tezbox:tezos-v21.3-rc5.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.3-rc5
+    #     tags: ghcr.io/tez-capital/tezbox:tezos-v21.4-rc5.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.4-rc5
     #     push: true
     #     provenance: false
 

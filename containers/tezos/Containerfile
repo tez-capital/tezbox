@@ -1,4 +1,4 @@
-ARG IMAGE_TAG=octez-v21.3
+ARG IMAGE_TAG=octez-v21.4
 
 FROM docker.io/tezos/tezos:${IMAGE_TAG}
 
