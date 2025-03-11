@@ -65,7 +65,7 @@ jobs:
     - name: build tezos v22.0-rc1
       uses: docker/build-push-action@v5
       with:
-        file: containers/tzc-tezos/Containerfile
+        file: containers/tezos/Containerfile
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |

@@ -82,7 +82,7 @@ jobs:
       uses: docker/build-push-action@v5
       if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
       with:
-        file: containers/tzc-tezos/Containerfile
+        file: containers/tezos/Containerfile
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
