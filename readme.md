@@ -40,6 +40,15 @@ You can list available protocols with the following command:
 docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v21.4 list-protocols
 ```
 
+#### Rio
+
+```bash
+# to run chain with the PsQuebec protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc1 riobox
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc1 riobox
+```
+
 #### CI
 
 `tezbox` is commonly used in CI pipelines. If you can estimate the expected duration of a specific test and want to prevent CI from getting stuck, you can use the `--timeout=<duration>` option to limit how long the instance runs. Supported units: `s` (seconds), `m` (minutes), `h` (hours). In case of a timeout, the container exits with an exit code of `2`.

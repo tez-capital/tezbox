@@ -130,6 +130,8 @@ local function inject_ascend_services(protocol, bakers, options)
 		if options.with_dal then
 			table.insert(args, "--dal-node")
 			table.insert(args, "http://127.0.0.1:10732")
+		else
+			table.insert(args, "--without-dal")
 		end
 
 		vars = util.merge_tables(vars, {
