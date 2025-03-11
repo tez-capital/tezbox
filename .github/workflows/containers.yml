@@ -70,7 +70,7 @@ jobs:
         platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=PsQuebec,PsRiotum
-          IMAGE_TAG=latest
+          IMAGE_TAG=octez-v22.0-rc1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         tags: ghcr.io/tez-capital/tezbox:tezos-v22.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0-rc1
         push: true
