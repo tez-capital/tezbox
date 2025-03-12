@@ -307,7 +307,7 @@ function core.initialize(protocol, options)
 
 		-- run baker and inject transfers
 		local proc = octez.baker.run(proto.short, {
-			"run", "remotely", "--votefile", path.combine(proto.path, constants.vote_file_id)
+			"run", "remotely", "--without-dal", "--votefile", path.combine(proto.path, constants.vote_file_id)
 		})
 
 		os.sleep(2)
