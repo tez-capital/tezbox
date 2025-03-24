@@ -44,9 +44,9 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v21.4 list-p
 
 ```bash
 # to run chain with the PsQuebec protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc2 riobox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3 riobox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc2 riobox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3 riobox
 ```
 
 #### CI
