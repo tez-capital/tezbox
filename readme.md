@@ -29,24 +29,24 @@ To use TezBox, you need to have OCI compatible container runtime installed on yo
 
 ```bash
 # to run chain with the PsQuebec protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 ```
 
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v21.4 list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v22.0 list-protocols
 ```
 
 #### Rio
 
 ```bash
 # to run chain with the PsQuebec protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3 riobox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 riobox
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3 riobox
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 riobox
 ```
 
 #### CI
@@ -54,7 +54,7 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3 ri
 `tezbox` is commonly used in CI pipelines. If you can estimate the expected duration of a specific test and want to prevent CI from getting stuck, you can use the `--timeout=<duration>` option to limit how long the instance runs. Supported units: `s` (seconds), `m` (minutes), `h` (hours). In case of a timeout, the container exits with an exit code of `2`.
 
 ```bash
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 --timeout=120s quebecbox
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 --timeout=120s quebecbox
 ```
 
 Note: The timeout specifies how long the sandbox runs, excluding the bootstrap duration.
@@ -69,9 +69,9 @@ To run a dal within tezbox start tezbox with `--with-dal` option as follows:
 
 ```bash
 # to run chain with the PsQuebec protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox --with-dal
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox --with-dal
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox --with-dal
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox --with-dal
 ```
 
 ### Configuration
@@ -90,15 +90,15 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 ```
 and run the container with the following command:
 ```bash
-# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsQuebec/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsQuebec/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
 Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
 
 ```bash
-docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 ```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
@@ -134,7 +134,7 @@ autostart: false
 ```
 and mount it into overrides directory:
 ```bash
-docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 ```
 
 #### Chain Context
@@ -143,7 +143,7 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v21.4 quebecbox
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.0 quebecbox
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/context/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
@@ -164,7 +164,7 @@ To build TezBox follow these steps:
 3. build lua sources (you can get eli [here](https://github.com/alis-is/eli/releases))
    - `eli build/build.lua`
 4. build the image
-   - `docker build --build-arg="PROTOCOLS=PsPaPsQuebecrisC" --build-arg="IMAGE_TAG=octez-v21.4" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
+   - `docker build --build-arg="PROTOCOLS=PsPaPsQuebecrisC" --build-arg="IMAGE_TAG=octez-v22.0" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
 
 ### Future development
 

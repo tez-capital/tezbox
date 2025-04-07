@@ -63,22 +63,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: build tezos v21.4
-      uses: docker/build-push-action@v5
-      if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
-      with:
-        file: containers/tezos/Containerfile
-        context: .
-        platforms: linux/amd64,linux/arm64
-        build-args: |
-          PROTOCOLS=PsQuebec
-          IMAGE_TAG=octez-v21.4
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v21.4.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v21.4,ghcr.io/tez-capital/tezbox:latest
-        push: true
-        provenance: false
-
-    - name: build tezos v22.0-rc3
+    - name: build tezos v22.0
       uses: docker/build-push-action@v5
       if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
       with:
@@ -87,8 +72,23 @@ jobs:
         platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=PsQuebec,PsRiotum
-          IMAGE_TAG=octez-v22.0-rc3
+          IMAGE_TAG=octez-v22.0
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0-rc3
+        tags: ghcr.io/tez-capital/tezbox:tezos-v22.0${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
+
+    # - name: build tezos v22.0
+    #   uses: docker/build-push-action@v5
+    #   if: ${{ steps.prep.outputs.NEEDS_RELEASE == 'true'}}
+    #   with:
+    #     file: containers/tezos/Containerfile
+    #     context: .
+    #     platforms: linux/amd64,linux/arm64
+    #     build-args: |
+    #       PROTOCOLS=PsQuebec,PsRiotum
+    #       IMAGE_TAG=octez-v22.0
+    #       GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+    #     tags: ghcr.io/tez-capital/tezbox:tezos-v22.0.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0
+    #     push: true
+    #     provenance: false
