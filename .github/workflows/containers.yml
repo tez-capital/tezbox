@@ -48,31 +48,31 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: build tezos v22.0
+    - name: build tezos v22.1
       uses: docker/build-push-action@v5
       with:
         file: containers/tezos/Containerfile
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          PROTOCOLS=PsQuebec
-          IMAGE_TAG=octez-v22.0
+          PROTOCOLS=PsRiotum
+          IMAGE_TAG=octez-v22.1
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v22.0.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0,ghcr.io/tez-capital/tezbox:latest
+        tags: ghcr.io/tez-capital/tezbox:tezos-v22.1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.1,ghcr.io/tez-capital/tezbox:latest
         push: true
         provenance: false
 
-    # - name: build tezos v22.0
+    # - name: build tezos v22.1
     #   uses: docker/build-push-action@v5
     #   with:
     #     file: containers/tezos/Containerfile
     #     context: .
     #     platforms: linux/amd64,linux/arm64
     #     build-args: |
-    #       PROTOCOLS=PsQuebec,PsRiotum
-    #       IMAGE_TAG=octez-v22.0
+    #       PROTOCOLS=PsRiotum
+    #       IMAGE_TAG=octez-v22.1
     #       GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-    #     tags: ghcr.io/tez-capital/tezbox:tezos-v22.0.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.0
+    #     tags: ghcr.io/tez-capital/tezbox:tezos-v22.1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v22.1
     #     push: true
     #     provenance: false
 

@@ -2,8 +2,8 @@ local amalg = loadfile("./build/amalg.lua")
 
 local function collect_requires(entrypoint)
 	local requires = {}
-	local ok, content = fs.safe_read_file(entrypoint)
-	if not ok then
+	local content, _ = fs.read_file(entrypoint)
+	if not content then
 		return requires
 	end
 	for require in content:gmatch("require%s*%(?%s*['\"](.-)['\"]%s*%)?") do
@@ -24,7 +24,7 @@ local function inject_license(file_path)
 	local content = fs.read_file(file_path)
 	local _, shebang_end = content:find("#!/[^\n]*")
 	local license = [[
--- Copyright (C) 2024 tez.capital
+-- Copyright (C) 2025 tez.capital
 
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU Affero General Public License as published

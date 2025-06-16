@@ -130,8 +130,8 @@ function octez.exec_with_node_running(exec, options)
 
 	local executed = false
 	while node_process:wait(100, 1000) == -1 do
-		local ok = net.safe_download_string("http://127.0.0.1:8732/chains/main/blocks/head/metadata")
-		if ok then
+		local response = net.download_string("http://127.0.0.1:8732/chains/main/blocks/head/metadata")
+		if response then
 			exec()
 			executed = true
 			break
@@ -168,16 +168,16 @@ end
 
 function octez.dal.install_trusted_setup()
 	log_info("installing dal trusted setup")
-	local ok = net.safe_download_file(constants.dal.scripts.setup, "/tmp/install_dal_trusted_setup.sh")
+	local ok, err = net.download_file(constants.dal.scripts.setup, "/tmp/install_dal_trusted_setup.sh")
 	if not ok then
-		log_error("failed to download dal setup script")
+		log_error("failed to download dal setup script: " .. tostring(err))
 		return false
 	end
 
 	for _, dependency in ipairs(constants.dal.scripts.dependencies) do
-		local ok = net.safe_download_file(dependency, "/tmp/" .. path.file(dependency))
+		local ok, err = net.download_file(dependency, "/tmp/" .. path.file(dependency))
 		if not ok then
-			log_error("failed to download dal setup script dependency " .. dependency)
+			log_error("failed to download dal setup script dependency " .. dependency .. ": " .. tostring(err))
 			return false
 		end
 	end

@@ -9,9 +9,9 @@ local context = {
 
 function context.setup_file_ownership()
 	if env.user ~= "" and env.user ~= "root" then
-		local ok, uid = fs.safe_getuid(env.user)
-		if not ok then
-			log_error("user " .. env.user .. " does not exist")
+		local uid, err = fs.getuid(env.user)
+		if not uid then
+			log_error("can't get uid for user '" .. env.user .. "': " .. tostring(err))
 			os.exit(1)
 		end
 
@@ -45,8 +45,8 @@ function context.build()
 			local configuration = hjson.decode(configuration_file_raw)
 
 			local configuration_overrides_file_path = path.combine(env.configuration_overrides_directory, configuration_file)
-			local ok, configuration_overrides_file_raw = fs.safe_read_file(configuration_overrides_file_path)
-			if ok then
+			local configuration_overrides_file_raw, _ = fs.read_file(configuration_overrides_file_path)
+			if configuration_overrides_file_raw then
 				local configuration_override = hjson.decode(configuration_overrides_file_raw)
 				configuration = util.merge_tables(configuration, configuration_override,
 					{ overwrite = true, array_merge_strategy = "prefer-t2" })

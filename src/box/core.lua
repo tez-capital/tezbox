@@ -103,7 +103,7 @@ local function inject_ascend_services(protocol, bakers, options)
 			service_file_path = service_file_path:sub(1, -5) -- remove .json ext
 			service_file_path = service_file_path .. "hjson"
 		end
-		local ok = fs.safe_write_file(service_file_path, service)
+		local ok = fs.write_file(service_file_path, service)
 		if not ok then
 			log_error("failed to write service file " .. service_file_path)
 			os.exit(1)
@@ -140,7 +140,7 @@ local function inject_ascend_services(protocol, bakers, options)
 		baker_service_template = baker_service_template:gsub("\"${BAKER_ARGS}\"", "${BAKER_ARGS}")
 		local service = string.interpolate(baker_service_template, vars)
 
-		local ok = fs.safe_write_file(service_file_path, service)
+		local ok = fs.write_file(service_file_path, service)
 		if not ok then
 			log_error("failed to write service file " .. service_file_path)
 			os.exit(1)
@@ -159,7 +159,7 @@ local function inject_ascend_services(protocol, bakers, options)
 
 		local service_template = fs.read_file(service_template_path)
 		local service = string.interpolate(service_template, vars)
-		local ok = fs.safe_write_file(service_file_path, service)
+		local ok = fs.write_file(service_file_path, service)
 		if not ok then
 			log_error("failed to copy extra service file " .. service_template_path .. " to " .. service_file_path)
 			os.exit(1)
@@ -183,14 +183,14 @@ local function inject_ascend_services(protocol, bakers, options)
 	for _, healthcheck_file_name in ipairs(healthcheck_files) do
 		local source_path = path.combine(healthchecks_directory, healthcheck_file_name)
 		local target_path = path.combine(ascend_healthchecks_directory, healthcheck_file_name)
-		local ok = fs.safe_copy(source_path, target_path)
+		local ok, err = fs.copy(source_path, target_path)
 		if not ok then
-			log_error("failed to copy healthcheck file " .. source_path .. " to " .. target_path)
+			log_error("failed to copy healthcheck file " .. source_path .. " to " .. target_path .. " - error: " .. tostring(err))
 			os.exit(1)
 		end
-		local ok = fs.chmod(target_path, "rwxr--r--")
+		local ok, err = fs.chmod(target_path, "rwxr--r--")
 		if not ok then
-			log_error("failed to chmod healthcheck file " .. target_path)
+			log_error("failed to chmod healthcheck file " .. target_path .. " - error: " .. tostring(err))
 			os.exit(1)
 		end
 	end
@@ -209,9 +209,9 @@ function core.initialize(protocol, options)
 
 	local initialized_protocol_file_path = path.combine(env.home_directory, "tezbox-initialized")
 
-	local ok, initialized_protocol = fs.safe_read_file(initialized_protocol_file_path)
+	local initialized_protocol = fs.read_file(initialized_protocol_file_path)
 
-	if ok then
+	if initialized_protocol then
 		if initialized_protocol == protocol then
 			log_info("tezbox already initialized for protocol " .. initialized_protocol)
 			return
@@ -346,7 +346,7 @@ function core.initialize(protocol, options)
 	-- copy .tezos-client from homeDirectory to HOME
 	local octez_client_path = path.combine(env.home_directory, ".tezos-client")
 	local octez_client_target_path = path.combine(os.getenv("HOME") or ".", ".tezos-client")
-	local ok, err = fs.safe_copy(octez_client_path, octez_client_target_path, { overwrite = true, ignore = function (path)
+	local ok, err = fs.copy(octez_client_path, octez_client_target_path, { overwrite = true, ignore = function (path)
 		return path:match("logs")
 	end })
 	if not ok then
