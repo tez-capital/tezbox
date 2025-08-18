@@ -3,7 +3,7 @@
     blocks_preservation_cycles: 1
     delegate_parameters_activation_delay: 3
     tolerated_inactivity_period: 2
-    blocks_per_cycle: 300
+    blocks_per_cycle: 900
     blocks_per_commitment: 25
     nonce_revelation_threshold: 50
     cycles_per_voting_period: 1
@@ -138,5 +138,5 @@
     direct_ticket_spending_enable: false
     aggregate_attestation: true
     allow_tz4_delegate_enable: true
-    all_bakers_attest_activation_level: null
+    all_bakers_attest_activation_level: 1
 }
