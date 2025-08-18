@@ -6,17 +6,6 @@ background20<p align="center"><img width="150" src="https://raw.githubuserconten
 
 TezBox is a tezos sandbox that allows you to run a minimal local tezos chain with a single command. It is designed to be a simple and easy to use tool for developers who want to quickly test their smart contracts or dapps on a local tezos chain.
 
-⚠️⚠️⚠️ BREAKING ⚠️⚠️⚠️
-
-0.5.0
-- The `HOME` directory is set to `/home/tezos`.
-  - Running `octez-client` and other applications in the container (excluding services) will use this `HOME` directory.
-- All services use `TEZBOX_HOME` as the `HOME` directory, with a default path of `/tezbox/context/data`.
-- Keys imported during bootstrap are accessible from both `HOME` directories.
-
-0.4.0
-- data directory moved from `/tezbox/data` to `/tezbox/context/data`
-
 ### Trusted By
 
 |         |         |
@@ -27,11 +16,22 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 
 To use TezBox, you need to have OCI compatible container runtime installed on your machine (e.g. docker, podman...). You can run TezBox with the following command:
 
+# Rio
+
 ```bash
 # to run chain with the PsRiotum protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 riobox
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 riobox
+```
+
+# Seoul
+
+```bash
+# to run chain with the PtSeouLou protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
+# or to run in the background
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
 ```
 
 You can list available protocols with the following command:
