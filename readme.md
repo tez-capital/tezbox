@@ -28,7 +28,7 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 riobox
 # Seoul
 
 ```bash
-# to run chain with the PtSeouLou protocol
+# to run chain with the PtSeouLo protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
