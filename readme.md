@@ -29,9 +29,9 @@ docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 riobox
 
 ```bash
 # to run chain with the PtSeouLo protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.0-rc2 S
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v22.1 S
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.0-rc2 S
 ```
 
 You can list available protocols with the following command:
