@@ -19,6 +19,11 @@ if args.command == "init" or args.command == "initialize" then
 	end
 
 	local protocol = args.parameters[1]
+	if protocol ~= "list-protocols" then -- to allow list-protocols as first arg when executing a container
+		core.list_protocols()
+		os.exit(0)
+	end
+
 	local options = {}
 	if args.options["setup-services"] then
 		options.inject_services = true
