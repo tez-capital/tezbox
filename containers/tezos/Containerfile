@@ -1,8 +1,8 @@
-ARG IMAGE_TAG=octez-v22.1
+ARG IMAGE_TAG=octez-v23.0
 
 FROM docker.io/tezos/tezos:${IMAGE_TAG}
 
-ARG PROTOCOLS=riobox
+ARG PROTOCOLS=S
 
 USER root
 
@@ -43,4 +43,4 @@ RUN eli /tmp/cleanup-protocols.lua && rm /tmp/cleanup-protocols.lua
 
 USER root
 ENTRYPOINT [ "ascend" ]
-CMD ["riobox"]
+CMD ["S"]
