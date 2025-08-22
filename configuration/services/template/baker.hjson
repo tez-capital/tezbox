@@ -1,5 +1,5 @@
 {
-    executable: octez-baker-${PROTOCOL_SHORT}
+    executable: octez-baker
     args: ${BAKER_ARGS}
     environment: {
         HOME: ${HOME}
