@@ -19,9 +19,9 @@ if args.command == "init" or args.command == "initialize" then
 	end
 
 	local protocol = args.parameters[1]
-	if protocol ~= "list-protocols" then -- to allow list-protocols as first arg when executing a container
+	if protocol == "list-protocols" then -- to allow list-protocols as first arg when executing a container
 		core.list_protocols()
-		os.exit(0)
+		os.exit(1)
 	end
 
 	local options = {}
