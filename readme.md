@@ -110,7 +110,7 @@ You can add modify as needed. Just mount your own file to `/tezbox/overrides/acc
 
 You can adjust service behavior by mounting your own configuration to `/tezbox/overrides/services/...` for override or `/tezbox/configuration/services/...` for full replacement.
 
-If you want to disable a service, you can create override with `autostart: false`. For example to disable baker service you would crease `baker.hjson` file:
+If you want to disable a service, you can create override with `autostart: false`. For example to disable baker service you would create `baker.hjson` file:
 ```hjson
 autostart: false
 ```
