@@ -50,7 +50,7 @@ Output from each service are stored in /ascend/logs within the container. To acc
 To run a dal within tezbox start tezbox with `--with-dal` option as follows:
 
 ```bash
-# to run chain with the PsRiotum protocol
+# to run chain with the S protocol
 docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S --with-dal
 # or to run in the background
 docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S --with-dal
@@ -73,7 +73,7 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 and run the container with the following command:
 ```bash
 # docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsRiotum/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PtSeouLo/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
@@ -146,7 +146,7 @@ To build TezBox follow these steps:
 3. build lua sources (you can get eli [here](https://github.com/alis-is/eli/releases))
    - `eli build/build.lua`
 4. build the image
-   - `docker build --build-arg="PROTOCOLS=PsRiotum" --build-arg="IMAGE_TAG=octez-v23.3" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
+   - `docker build --build-arg="PROTOCOLS=PtSeouLo" --build-arg="IMAGE_TAG=octez-v23.3" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
 
 ### Future development
 
