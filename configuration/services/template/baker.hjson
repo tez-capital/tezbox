@@ -6,7 +6,7 @@
         TEZOS_LOG: "* -> info"
     }
     restart: always
-    restart_delay: 10
+    restart_delay: 5
     restart_max_retries: 0 # unlimited
     stop_timeout: 300
     user: ${USER}
