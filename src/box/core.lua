@@ -310,7 +310,7 @@ function core.initialize(protocol, options)
 			"run", "remotely", "--without-dal", "--votefile", path.combine(proto.path, constants.vote_file_id)
 		})
 
-		os.sleep(2)
+		os.sleep(2, "s")
 		for baker_id, baker in pairs(baker_accounts) do
 			if not baker.deposits then
 				goto continue

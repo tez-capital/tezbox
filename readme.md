@@ -35,15 +35,15 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v23.3 list-p
 
 ```bash
 # to run chain with the T protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc1 T
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 T
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc1 T
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 T
 ```
 
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v24.0-rc1 list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 list-protocols
 ```
 
 #### CI

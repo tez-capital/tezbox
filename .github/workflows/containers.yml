@@ -62,7 +62,7 @@ jobs:
         push: true
         provenance: false
 
-    - name: build tezos v24.0-rc1
+    - name: build tezos v24.0-rc2
       uses: docker/build-push-action@v5
       with:
         file: containers/tezos/Containerfile
@@ -70,9 +70,9 @@ jobs:
         platforms: linux/amd64,linux/arm64
         build-args: |
           PROTOCOLS=PtSeouLo,PtTALLiN
-          IMAGE_TAG=octez-v24.0-rc1
+          IMAGE_TAG=octez-v24.0-rc2
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        tags: ghcr.io/tez-capital/tezbox:tezos-v24.0-rc1.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v24.0-rc1
+        tags: ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2
         push: true
         provenance: false
 
