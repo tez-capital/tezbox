@@ -2,4 +2,4 @@
 
 To Run:
 
-`docker run -v $(pwd)/samples/multi-node_multi-dal/overrides:/tezbox/overrides -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S --with-dal`
+`docker run -v $(pwd)/samples/multi-node_multi-dal/overrides:/tezbox/overrides -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T --with-dal`

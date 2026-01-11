@@ -16,34 +16,19 @@ TezBox is a tezos sandbox that allows you to run a minimal local tezos chain wit
 
 To use TezBox, you need to have OCI compatible container runtime installed on your machine (e.g. docker, podman...). You can run TezBox with the following command:
 
-# Seoul
-
-```bash
-# to run chain with the S protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S
-# or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S
-```
-
-You can list available protocols with the following command:
-```bash
-# docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v23.3 list-protocols
-```
-
 # Tallin
 
 ```bash
 # to run chain with the T protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 T
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 T
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 ```
 
 You can list available protocols with the following command:
 ```bash
 # docker run -it <image> list-protocols
-docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 list-protocols
+docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v24.0 list-protocols
 ```
 
 #### CI
@@ -51,7 +36,7 @@ docker run -it --entrypoint tezbox ghcr.io/tez-capital/tezbox:tezos-v24.0-rc2 li
 `tezbox` is commonly used in CI pipelines. If you can estimate the expected duration of a specific test and want to prevent CI from getting stuck, you can use the `--timeout=<duration>` option to limit how long the instance runs. Supported units: `s` (seconds), `m` (minutes), `h` (hours). In case of a timeout, the container exits with an exit code of `2`.
 
 ```bash
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 --timeout=120s S
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 --timeout=120s S
 ```
 
 Note: The timeout specifies how long the sandbox runs, excluding the bootstrap duration.
@@ -65,10 +50,10 @@ Output from each service are stored in /ascend/logs within the container. To acc
 To run a dal within tezbox start tezbox with `--with-dal` option as follows:
 
 ```bash
-# to run chain with the S protocol
-docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S --with-dal
+# to run chain with the T protocol
+docker run -it -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T --with-dal
 # or to run in the background
-docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S --with-dal
+docker run -d -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T --with-dal
 ```
 
 ### Configuration
@@ -87,15 +72,15 @@ minimal_block_delay: "1" // minimal block delay in seconds, has to be quoted
 ```
 and run the container with the following command:
 ```bash
-# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
-docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PtSeouLo/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
+# docker run -it -v <path-to-your-file>:/tezbox/overrides/protocols/<case sensitive protocol id>/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v24.0 T
+docker run -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PtSeouLo/sandbox-parameters.hjson ... ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 ```
 You can determine path based on folder structure in [configuration directory](https://github.com/tez-capital/tezbox/tree/main/configuration).
 
 Optionally you can mount entire overrides/configuration directory to `/tezbox/overrides` or `/tezbox/configuration` to replace the whole configuration.
 
 ```bash
-docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
+docker run -it -v <path-to-your-configuration-overrides>:/tezbox/overrides ... ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 ```
 
 NOTE: **Do not edit or mount configuration files in the `/tezbox/context` directory. They are generated automatically and should not be modified manually.**
@@ -131,7 +116,7 @@ autostart: false
 ```
 and mount it into overrides directory:
 ```bash
-docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v23.3 S
+docker run -it -v $(pwd)/baker.hjson:/tezbox/overrides/services/baker.hjson ... ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 ```
 
 #### Chain Context
@@ -140,7 +125,7 @@ Chain and protocol is automatically initialized only once during the first run. 
 
 e.g.
 ```bash
-docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v23.3 S
+docker run -it -v $(pwd)/sandbox-data:/tezbox -p 0.0.0.0:8732:8732 ghcr.io/tez-capital/tezbox:tezos-v24.0 T
 ```
 
 NOTE: *To reset the state you can remove the `/tezbox/context/data/tezbox-initialized` file. After its removal all chain and client data will be removed and the chain will be reinitialized on the next run.*
@@ -161,7 +146,7 @@ To build TezBox follow these steps:
 3. build lua sources (you can get eli [here](https://github.com/alis-is/eli/releases))
    - `eli build/build.lua`
 4. build the image
-   - `docker build --build-arg="PROTOCOLS=PtSeouLo" --build-arg="IMAGE_TAG=octez-v23.3" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
+   - `docker build --build-arg="PROTOCOLS=PtSeouLo" --build-arg="IMAGE_TAG=octez-v24.0" -t tezbox . -f  containers/tezos/Containerfile --no-cache`
 
 ### Future development
 
