@@ -6,7 +6,6 @@
     "test": "node --test ./taquito-e2e.mjs"
   },
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
     "@taquito/signer": "24.2.0",
     "@taquito/taquito": "24.2.0"
