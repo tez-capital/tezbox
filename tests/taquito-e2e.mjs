@@ -57,7 +57,7 @@ function run(command, args, options = {}) {
 }
 
 async function reservePort() {
-	return await new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		const server = net.createServer();
 		server.unref();
 		server.on('error', reject);
@@ -84,6 +84,12 @@ async function waitFor(fn, timeoutMs, intervalMs = 1000) {
 		await new Promise((resolve) => setTimeout(resolve, intervalMs));
 	}
 	throw new Error('Timed out waiting for TezBox container readiness');
+}
+
+async function fetchBalances() {
+	const alice = await tezos.tz.getBalance(ALICE_ADDRESS);
+	const bob = await tezos.tz.getBalance(BOB_ADDRESS);
+	return { alice, bob };
 }
 
 async function sendTransfer() {
@@ -143,8 +149,7 @@ test('runs starter Taquito e2e coverage against a TezBox container', async (t) =
 	await t.test('reads funded bootstrap balances from the container RPC', async () => {
 		fundedBalances = await waitFor(async () => {
 			try {
-				const alice = await tezos.tz.getBalance(ALICE_ADDRESS);
-				const bob = await tezos.tz.getBalance(BOB_ADDRESS);
+				const { alice, bob } = await fetchBalances();
 				if (alice > 0n && bob > 0n) {
 					return { alice, bob };
 				}
@@ -163,17 +168,12 @@ test('runs starter Taquito e2e coverage against a TezBox container', async (t) =
 
 		await sendTransfer();
 
-		let updatedBalances = await waitFor(async () => {
-			const alice = await tezos.tz.getBalance(ALICE_ADDRESS);
-			const bob = await tezos.tz.getBalance(BOB_ADDRESS);
-			return { alice, bob };
-		}, 30000, 2000);
+		let updatedBalances = await waitFor(fetchBalances, 30000, 2000);
 
 		if (updatedBalances.bob <= fundedBalances.bob) {
 			await sendTransfer();
 			updatedBalances = await waitFor(async () => {
-				const alice = await tezos.tz.getBalance(ALICE_ADDRESS);
-				const bob = await tezos.tz.getBalance(BOB_ADDRESS);
+				const { alice, bob } = await fetchBalances();
 				if (bob > fundedBalances.bob) {
 					return { alice, bob };
 				}
