@@ -1,0 +1,20 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup eli
+      uses: alis-is/setup-eli@v1
+
+    - name: test tezbox
+      run: |
+        eli ./tests/all.lua
