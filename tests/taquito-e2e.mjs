@@ -17,6 +17,7 @@ let rpcUrl;
 let tezos;
 let signer;
 let fundedBalances;
+let fundedLevel;
 
 function run(command, args, options = {}) {
 	return new Promise((resolve, reject) => {
@@ -158,6 +159,7 @@ test('runs starter Taquito e2e coverage against a TezBox container', async (t) =
 			}
 			return false;
 		}, 180000, 2000);
+		fundedLevel = (await tezos.rpc.getBlockHeader()).level;
 
 		assert(fundedBalances.alice > 0n);
 		assert(fundedBalances.bob > 0n);
@@ -165,21 +167,21 @@ test('runs starter Taquito e2e coverage against a TezBox container', async (t) =
 
 	await t.test('sends a transaction between bootstrap accounts through Taquito', async () => {
 		assert(fundedBalances, 'expected balances to be loaded before transfer test');
+		assert.notEqual(fundedLevel, undefined, 'expected funded block level before transfer test');
+
+		await waitFor(async () => {
+			const header = await tezos.rpc.getBlockHeader();
+			return header.level >= fundedLevel + 1 ? header.level : false;
+		}, 60000, 1000);
 
 		await sendTransfer();
-
-		let updatedBalances = await waitFor(fetchBalances, 30000, 2000);
-
-		if (updatedBalances.bob <= fundedBalances.bob) {
-			await sendTransfer();
-			updatedBalances = await waitFor(async () => {
-				const { alice, bob } = await fetchBalances();
-				if (bob > fundedBalances.bob) {
-					return { alice, bob };
-				}
-				return false;
-			}, 120000, 2000);
-		}
+		const updatedBalances = await waitFor(async () => {
+			const { alice, bob } = await fetchBalances();
+			if (bob > fundedBalances.bob) {
+				return { alice, bob };
+			}
+			return false;
+		}, 120000, 2000);
 
 		assert(updatedBalances.bob > fundedBalances.bob);
 		assert(updatedBalances.alice < fundedBalances.alice);
