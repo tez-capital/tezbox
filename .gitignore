@@ -3,3 +3,4 @@ archive
 
 bin/*
 !bin/.gitkeep
+tests/node_modules/

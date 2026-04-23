@@ -15,6 +15,8 @@ jobs:
       uses: alis-is/setup-eli@v1
 
     - name: test tezbox
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         eli ./tests/all.lua
 
@@ -75,5 +77,4 @@ jobs:
     #     tags: ghcr.io/tez-capital/tezbox:tezos-v24.4-rc2.${{steps.prep.outputs.CURRENT_DATE}},ghcr.io/tez-capital/tezbox:tezos-v24.4-rc2
     #     push: true
     #     provenance: false
-
 

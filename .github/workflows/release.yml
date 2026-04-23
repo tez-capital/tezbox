@@ -20,6 +20,8 @@ jobs:
       uses: alis-is/setup-eli@v1
 
     - name: test tezbox
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         eli ./tests/all.lua
 
