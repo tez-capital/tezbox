@@ -15,5 +15,17 @@ local function run(command, args)
 	end
 end
 
+local test_image = "tezbox-e2e:current-branch"
+
+run("eli", { "./build/build.lua" })
+run("docker", {
+	"build",
+	"--build-arg", "PROTOCOLS=PtSeouLo,PtTALLiN",
+	"--build-arg", "IMAGE_TAG=octez-v24.4",
+	"--build-arg", "GITHUB_TOKEN=" .. (os.getenv("GITHUB_TOKEN") or ""),
+	"-t", test_image,
+	"-f", "containers/tezos/Containerfile",
+	".",
+})
 run("npm", { "--prefix", "tests", "ci" })
 run("npm", { "--prefix", "tests", "test" })
