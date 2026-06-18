@@ -154,11 +154,11 @@ function octez.node.generate_identity(options)
 	return octez.node.run({ "identity", "generate", "0.0" }, options)
 end
 
-function octez.baker.run(short_protocol, args, options)
+function octez.baker.run(args, options)
 	if type(options) ~= "table" then options = {} end
 	if type(args) ~= "table" then args = {} end
 
-	return proc.spawn(env.octez_baker_binary .. "-" .. short_protocol, args, {
+	return proc.spawn(env.octez_baker_binary, args, {
 		username = options.user or env.user,
 		wait = false,
 		stdio = "inherit",
