@@ -1,0 +1,13 @@
+{
+  "name": "tezbox-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test ./taquito-e2e.mjs"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@taquito/signer": "24.2.0",
+    "@taquito/taquito": "24.2.0"
+  }
+}
