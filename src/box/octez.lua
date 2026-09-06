@@ -183,11 +183,6 @@ function octez.dal.install_trusted_setup()
 	end
 
 	local args = { "/tmp/install_dal_trusted_setup.sh" }
-
-	if os.execute("octez-node --version | grep '20.'") then
-		table.insert(args, "--legacy")
-	end
-
 	local result = proc.spawn("sh", args, {
 		username = env.user,
 		wait = true,

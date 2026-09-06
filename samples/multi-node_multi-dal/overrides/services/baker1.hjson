@@ -17,7 +17,7 @@
     "${HOME}/.tezos-node",
     "baker1",
     "--votefile",
-    "/tezbox/context/protocols/PtSeouLo/vote-file.json",
+    "/tezbox/context/protocols/PsUshuai/vote-file.json",
     "--dal-node",
     "http://127.0.0.1:10734"
   ]
